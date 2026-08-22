@@ -11,18 +11,6 @@
   <aside id="sidebar">
     <h2>🪡 Punto Croce Web</h2>
 
-    <div id="authBox" class="section">
-      <div id="loggedOutUI">
-        <button class="action-btn" onclick="openModal('loginModal')">Accedi</button>
-        <button class="action-btn secondary" onclick="openModal('registerModal')">Registrati</button>
-      </div>
-      <div id="loggedInUI" style="display:none;">
-        <span id="userGreeting">Ciao, Utente!</span>
-        <button class="action-btn secondary" onclick="openProjectsModal()">📁 I Miei Progetti</button>
-        <button class="action-btn danger" onclick="logout()">Esci</button>
-      </div>
-    </div>
-    
     <div class="section">
       <label>Carica Foto per Schema</label>
       <div class="file-input-wrapper">
@@ -53,47 +41,10 @@
     <canvas id="crossStitchCanvas"></canvas>
   </main>
 
-  <!-- Modale Login -->
-  <div id="loginModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('loginModal')">&times;</span>
-      <h3>Accedi al tuo Account</h3>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="loginUsername" placeholder="Username o Email" required>
-        <input type="password" id="loginPassword" placeholder="Password" required>
-        <button type="submit" class="action-btn">Accedi</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modale Registrazione -->
-  <div id="registerModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('registerModal')">&times;</span>
-      <h3>Crea un Account</h3>
-      <form id="registerForm" onsubmit="handleRegister(event)">
-        <input type="text" id="regUsername" placeholder="Username" required>
-        <input type="email" id="regEmail" placeholder="Email" required>
-        <input type="password" id="regPassword" placeholder="Password" required>
-        <button type="submit" class="action-btn">Registrati</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Modale I Miei Progetti -->
-  <div id="projectsModal" class="modal">
-    <div class="modal-content wide">
-      <span class="close" onclick="closeModal('projectsModal')">&times;</span>
-      <h3>I Miei Progetti Salvati</h3>
-      <div id="projectsList" class="projects-list">Caricamento...</div>
-    </div>
-  </div>
-
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/editor.js"></script>
   <script src="js/image_converter.js"></script>
-  <script src="js/auth.js"></script>
   <script src="js/storage_local.js"></script>
-  <script src="js/storage_gdrive.js"></script>
+  <script src="js/storage_gdrive."></script>
 </body>
 </html>
