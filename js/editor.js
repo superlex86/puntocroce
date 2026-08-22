@@ -1,126 +1,155 @@
-const COLS = 30;
-const ROWS = 30;
-const CELL_SIZE = 22;
+let gridWidth = 50;
+let gridHeight = 50;
+let cellSize = 15;
+let currentZoom = 1;
+let selectedColor = '#000000';
+let gridData = {};
 
 const dmcPalette = [
-  { code: 'DMC 310', name: 'Nero', hex: '#000000', rgb: [0, 0, 0], symbol: '★', textColor: '#ffffff' },
-  { code: 'DMC 666', name: 'Rosso', hex: '#E31C3D', rgb: [227, 28, 61], symbol: '♥', textColor: '#ffffff' },
-  { code: 'DMC 796', name: 'Blu', hex: '#1034A6', rgb: [16, 52, 166], symbol: '▲', textColor: '#ffffff' },
-  { code: 'DMC 702', name: 'Verde', hex: '#4B9B49', rgb: [75, 155, 73], symbol: '■', textColor: '#ffffff' },
-  { code: 'DMC 743', name: 'Giallo', hex: '#FCD116', rgb: [252, 209, 22], symbol: '●', textColor: '#000000' },
-  { code: 'DMC B5200', name: 'Bianco', hex: '#FFFFFF', rgb: [255, 255, 255], symbol: '◇', textColor: '#000000' },
-  { code: 'DMC 3825', name: 'Arancione', hex: '#F7A266', rgb: [247, 162, 102], symbol: '✦', textColor: '#000000' },
-  { code: 'DMC 550', name: 'Viola', hex: '#5C1D52', rgb: [92, 29, 82], symbol: '✿', textColor: '#ffffff' }
+  { code: '310', name: 'Nero', hex: '#000000' },
+  { code: 'BLANC', name: 'Bianco Neve', hex: '#FFFFFF' },
+  { code: '666', name: 'Rosso Brillante', hex: '#E31D2B' },
+  { code: '321', name: 'Rosso', hex: '#C71123' },
+  { code: '498', name: 'Rosso Scuro', hex: '#A70C1B' },
+  { code: '815', name: 'Garnet / Borgogna', hex: '#770712' },
+  { code: '602', name: 'Rosa Cranberry', hex: '#E3337A' },
+  { code: '605', name: 'Rosa Chiaro', hex: '#FA92BA' },
+  { code: '743', name: 'Giallo Medio', hex: '#F3C010' },
+  { code: '745', name: 'Giallo Chiaro', hex: '#FFE79A' },
+  { code: '972', name: 'Giallo Canarino', hex: '#FFBC00' },
+  { code: '740', name: 'Arancione', hex: '#FF6F00' },
+  { code: '900', name: 'Arancione Scuro', hex: '#D73B00' },
+  { code: '702', name: 'Verde Erba', hex: '#11A843' },
+  { code: '700', name: 'Verde Brillante', hex: '#008733' },
+  { code: '699', name: 'Verde Intenso', hex: '#006B27' },
+  { code: '986', name: 'Verde Foresta', hex: '#17401B' },
+  { code: '826', name: 'Blu Medio', hex: '#4B88B3' },
+  { code: '796', name: 'Blu Scuro Royal', hex: '#112C6E' },
+  { code: '820', name: 'Blu Notte Intenso', hex: '#0A1845' },
+  { code: '208', name: 'Lilla Scuro', hex: '#83418A' },
+  { code: '209', name: 'Lilla', hex: '#A568A9' },
+  { code: '211', name: 'Lilla Chiarissimo', hex: '#D9B1DA' },
+  { code: '434', name: 'Marrone Cammello', hex: '#955427' },
+  { code: '801', name: 'Marrone Scuro', hex: '#532D11' },
+  { code: '3371', name: 'Marrone Nero', hex: '#1E0E04' },
+  { code: '415', name: 'Grigio Perla', hex: '#D3D3D5' },
+  { code: '318', name: 'Grigio Medio', hex: '#9B9B9D' },
+  { code: '413', name: 'Grigio Antracite', hex: '#545456' }
 ];
-
-let selectedColor = dmcPalette[1];
-let gridData = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
-let isMouseDown = false;
 
 const canvas = document.getElementById('crossStitchCanvas');
 const ctx = canvas.getContext('2d');
+const container = document.getElementById('canvasContainer');
+const sidebar = document.getElementById('sidebar');
 
-canvas.width = COLS * CELL_SIZE;
-canvas.height = ROWS * CELL_SIZE;
-
-function initPalette() {
-  const paletteContainer = document.getElementById('palette');
-  paletteContainer.innerHTML = '';
+function renderPaletteSelect() {
+  const select = document.getElementById('dmcSelect');
+  select.innerHTML = '';
+  
   dmcPalette.forEach((item, index) => {
-    const btn = document.createElement('button');
-    btn.className = `color-btn ${item.code === selectedColor.code ? 'active' : ''}`;
-    btn.onclick = () => {
-      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedColor = item;
-    };
-    btn.innerHTML = `
-      <div class="swatch" style="background:${item.hex}; color:${item.textColor}">${item.symbol}</div>
-      <div><div>${item.code}</div><small style="color:#666">${item.name}</small></div>
-    `;
-    paletteContainer.appendChild(btn);
+    const opt = document.createElement('option');
+    opt.value = item.hex;
+    opt.textContent = `DMC ${item.code} - ${item.name}`;
+    select.appendChild(opt);
   });
+
+  if (dmcPalette.length > 0) {
+    onColorSelectChange(dmcPalette[0].hex);
+  }
 }
 
-function draw() {
+function onColorSelectChange(hexValue) {
+  selectedColor = hexValue;
+  const swatch = document.getElementById('selectedSwatch');
+  swatch.style.backgroundColor = hexValue;
+}
+
+function initCanvas() {
+  canvas.width = gridWidth * cellSize;
+  canvas.height = gridHeight * cellSize;
+  drawGrid();
+  resetZoomFit();
+}
+
+function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const item = gridData[r][c];
-      if (item) {
-        const x = c * CELL_SIZE;
-        const y = r * CELL_SIZE;
-        
-        ctx.fillStyle = item.hex;
-        ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-
-        ctx.strokeStyle = item.textColor;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(x + 3, y + 3);
-        ctx.lineTo(x + CELL_SIZE - 3, y + CELL_SIZE - 3);
-        ctx.moveTo(x + CELL_SIZE - 3, y + 3);
-        ctx.lineTo(x + 3, y + CELL_SIZE - 3);
-        ctx.stroke();
-
-        ctx.fillStyle = item.textColor;
-        ctx.font = '10px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(item.symbol, x + CELL_SIZE / 2, y + CELL_SIZE / 2);
-      }
-    }
+  
+  for (let key in gridData) {
+    const [x, y] = key.split(',').map(Number);
+    ctx.fillStyle = gridData[key];
+    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
   }
 
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= COLS; i++) {
-    ctx.strokeStyle = (i % 10 === 0) ? '#000000' : '#cccccc';
-    ctx.lineWidth = (i % 10 === 0) ? 1.5 : 0.5;
-    
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= gridWidth; x++) {
+    ctx.strokeStyle = (x % 10 === 0) ? '#000000' : '#e0e0e0';
     ctx.beginPath();
-    ctx.moveTo(i * CELL_SIZE, 0);
-    ctx.lineTo(i * CELL_SIZE, canvas.height);
+    ctx.moveTo(x * cellSize, 0);
+    ctx.lineTo(x * cellSize, canvas.height);
     ctx.stroke();
-
+  }
+  for (let y = 0; y <= gridHeight; y++) {
+    ctx.strokeStyle = (y % 10 === 0) ? '#000000' : '#e0e0e0';
     ctx.beginPath();
-    ctx.moveTo(0, i * CELL_SIZE);
-    ctx.lineTo(canvas.width, i * CELL_SIZE);
+    ctx.moveTo(0, y * cellSize);
+    ctx.lineTo(canvas.width, y * cellSize);
     ctx.stroke();
   }
 }
 
-function handleInteract(e) {
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  const col = Math.floor(x / CELL_SIZE);
-  const row = Math.floor(y / CELL_SIZE);
-
-  if (col >= 0 && col < COLS && row >= 0 && row < ROWS) {
-    if (e.buttons === 1) gridData[row][col] = selectedColor;
-    else if (e.buttons === 2) gridData[row][col] = null;
-    draw();
-  }
+function changeZoom(delta) {
+  currentZoom = Math.min(Math.max(0.2, currentZoom + delta), 3.0);
+  applyZoom();
 }
 
-canvas.addEventListener('mousedown', (e) => { isMouseDown = true; handleInteract(e); });
-canvas.addEventListener('mousemove', (e) => { if (isMouseDown) handleInteract(e); });
-window.addEventListener('mouseup', () => isMouseDown = false);
-canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+function resetZoomFit() {
+  const workspace = document.getElementById('workspace');
+  const padding = 40;
+  const scaleX = (workspace.clientWidth - padding) / canvas.width;
+  const scaleY = (workspace.clientHeight - padding) / canvas.height;
+  currentZoom = Math.min(scaleX, scaleY, 1.5);
+  applyZoom();
+}
+
+function applyZoom() {
+  container.style.transform = `scale(${currentZoom})`;
+}
+
+function resizeGridFromInput() {
+  const w = parseInt(document.getElementById('gridWidthInput').value);
+  const h = parseInt(document.getElementById('gridHeightInput').value);
+  if (w > 0 && h > 0) {
+    gridWidth = w;
+    gridHeight = h;
+    initCanvas();
+  }
+}
 
 function clearGrid() {
-  gridData = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
-  draw();
+  gridData = {};
+  drawGrid();
 }
 
-function exportPNG() {
-  const link = document.createElement('a');
-  link.download = 'schema-punto-croce.png';
-  link.href = canvas.toDataURL();
-  link.click();
-}
+document.getElementById('toggleSidebarBtn').addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+});
 
-initPalette();
-draw();
+document.getElementById('closeSidebarBtn').addEventListener('click', () => {
+  sidebar.classList.remove('open');
+});
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.floor((e.clientX - rect.left) / (cellSize * currentZoom));
+  const y = Math.floor((e.clientY - rect.top) / (cellSize * currentZoom));
+  if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight) {
+    gridData[`${x},${y}`] = selectedColor;
+    drawGrid();
+  }
+});
+
+window.addEventListener('resize', resetZoomFit);
+window.addEventListener('DOMContentLoaded', () => {
+  renderPaletteSelect();
+  initCanvas();
+});

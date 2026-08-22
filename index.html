@@ -8,8 +8,26 @@
 </head>
 <body>
 
+  <header id="mainHeader">
+    <button id="toggleSidebarBtn" aria-label="Toggle Sidebar">☰ Strumenti</button>
+    <h1 class="app-title">🪡 Punto Croce Web</h1>
+  </header>
+
   <aside id="sidebar">
-    <h2>🪡 Punto Croce Web</h2>
+    <div class="sidebar-header">
+      <h2>Strumenti</h2>
+      <button id="closeSidebarBtn">✕</button>
+    </div>
+
+    <div class="section">
+      <label>Dimensione Griglia (punti)</label>
+      <div class="grid-size-inputs">
+        <input type="number" id="gridWidthInput" min="10" max="200" value="50" placeholder="Largh.">
+        <span>x</span>
+        <input type="number" id="gridHeightInput" min="10" max="200" value="50" placeholder="Alt.">
+        <button class="action-btn secondary" onclick="resizeGridFromInput()">Applica</button>
+      </div>
+    </div>
 
     <div class="section">
       <label>Carica Foto per Schema</label>
@@ -20,8 +38,11 @@
     </div>
     
     <div class="section">
-      <label>Tavolozza Filati DMC</label>
-      <div class="palette" id="palette"></div>
+      <label for="dmcSelect">Seleziona Filato DMC</label>
+      <div class="color-select-wrapper">
+        <span id="selectedSwatch" class="swatch-preview"></span>
+        <select id="dmcSelect" class="dmc-dropdown" onchange="onColorSelectChange(this.value)"></select>
+      </div>
     </div>
 
     <div class="section">
@@ -33,17 +54,24 @@
         <input type="file" id="localProjectLoader" accept=".cross,.json" onchange="importProjectFromLocal(event)">
       </div>
       <button class="action-btn gdrive" onclick="saveToDrive()">☁️ Salva su Google Drive</button>
-      <button class="action-btn clear-btn" onclick="clearGrid()">Svuota Griglia</button>
+      <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>
     </div>
-
-    <footer class="sidebar-footer">
-      <p>&copy; 2026 Alessio Zanni. Tutti i diritti riservati.</p>
-    </footer>
   </aside>
 
   <main id="workspace">
-    <canvas id="crossStitchCanvas"></canvas>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="changeZoom(0.1)">+</button>
+      <button class="zoom-btn" onclick="resetZoomFit()">Fit</button>
+      <button class="zoom-btn" onclick="changeZoom(-0.1)">-</button>
+    </div>
+    <div id="canvasContainer">
+      <canvas id="crossStitchCanvas"></canvas>
+    </div>
   </main>
+
+  <footer id="mainFooter">
+    <p>&copy; 2026 Alessio Zanni. Tutti i diritti riservati.</p>
+  </footer>
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="js/editor.js"></script>
