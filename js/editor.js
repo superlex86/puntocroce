@@ -44,9 +44,10 @@ const sidebar = document.getElementById('sidebar');
 
 function renderPaletteSelect() {
   const select = document.getElementById('dmcSelect');
+  if (!select) return;
   select.innerHTML = '';
   
-  dmcPalette.forEach((item, index) => {
+  dmcPalette.forEach((item) => {
     const opt = document.createElement('option');
     opt.value = item.hex;
     opt.textContent = `DMC ${item.code} - ${item.name}`;
@@ -61,7 +62,7 @@ function renderPaletteSelect() {
 function onColorSelectChange(hexValue) {
   selectedColor = hexValue;
   const swatch = document.getElementById('selectedSwatch');
-  swatch.style.backgroundColor = hexValue;
+  if (swatch) swatch.style.backgroundColor = hexValue;
 }
 
 function initCanvas() {
@@ -104,15 +105,30 @@ function changeZoom(delta) {
 
 function resetZoomFit() {
   const workspace = document.getElementById('workspace');
+  if (!workspace) return;
+  
   const padding = 40;
-  const scaleX = (workspace.clientWidth - padding) / canvas.width;
-  const scaleY = (workspace.clientHeight - padding) / canvas.height;
-  currentZoom = Math.min(scaleX, scaleY, 1.5);
+  const availableWidth = workspace.clientWidth - padding;
+  const availableHeight = workspace.clientHeight - padding;
+
+  const scaleX = availableWidth / canvas.width;
+  const scaleY = availableHeight / canvas.height;
+
+  currentZoom = Math.min(scaleX, scaleY);
+  currentZoom = Math.min(Math.max(currentZoom, 0.2), 1.5);
+
   applyZoom();
 }
 
 function applyZoom() {
-  container.style.transform = `scale(${currentZoom})`;
+  const scaledWidth = canvas.width * currentZoom;
+  const scaledHeight = canvas.height * currentZoom;
+
+  container.style.width = `${scaledWidth}px`;
+  container.style.height = `${scaledHeight}px`;
+
+  canvas.style.width = `${scaledWidth}px`;
+  canvas.style.height = `${scaledHeight}px`;
 }
 
 function resizeGridFromInput() {
