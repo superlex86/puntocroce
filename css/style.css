@@ -1,12 +1,20 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { 
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   font-family: system-ui, -apple-system, sans-serif; 
+  background: #f4f5f7; 
+}
+
+body { 
   display: flex; 
   flex-direction: column; 
-  height: 100vh; 
-  background: #f4f5f7; 
-  overflow: hidden; 
-  position: relative; 
 }
 
 #mainHeader {
@@ -15,35 +23,41 @@ body {
   border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
   gap: 12px;
   z-index: 100;
   box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .app-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #333;
   font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #toggleSidebarBtn {
   background: #2563eb;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 #sidebar {
   position: fixed;
   top: 50px;
   left: 0;
-  bottom: 0;
-  width: 300px;
+  bottom: 28px;
+  width: 280px;
+  max-width: 85vw;
   background: #ffffff;
   border-right: 1px solid #e0e0e0;
   padding: 16px;
@@ -77,42 +91,166 @@ body {
   color: #666; 
 }
 
-.section { display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
-label { font-size: 0.85rem; font-weight: 600; color: #666; }
+.section { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  border-bottom: 1px solid #f0f0f0; 
+  padding-bottom: 12px; 
+}
 
-.grid-size-inputs { display: flex; align-items: center; gap: 6px; }
-.grid-size-inputs input { width: 60px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+label { 
+  font-size: 0.8rem; 
+  font-weight: 600; 
+  color: #666; 
+}
 
-.color-select-wrapper { display: flex; align-items: center; gap: 8px; }
-.swatch-preview { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.2); display: inline-block; flex-shrink: 0; }
-.dmc-dropdown { flex: 1; padding: 8px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.85rem; background: #fff; cursor: pointer; }
+.grid-size-inputs { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+}
 
-button.action-btn { padding: 8px 12px; border: none; border-radius: 6px; background: #2563eb; color: white; font-weight: 600; cursor: pointer; transition: background 0.2s; font-size: 0.85rem; }
+.grid-size-inputs input { 
+  width: 60px; 
+  padding: 6px; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+  text-align: center; 
+}
+
+.color-select-wrapper { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+}
+
+.swatch-preview { 
+  width: 28px; 
+  height: 28px; 
+  border-radius: 6px; 
+  border: 1px solid rgba(0,0,0,0.2); 
+  display: inline-block; 
+  flex-shrink: 0; 
+}
+
+.dmc-dropdown { 
+  flex: 1; 
+  padding: 8px; 
+  border-radius: 6px; 
+  border: 1px solid #ccc; 
+  font-size: 0.8rem; 
+  background: #fff; 
+  cursor: pointer; 
+}
+
+button.action-btn { 
+  padding: 8px 12px; 
+  border: none; 
+  border-radius: 6px; 
+  background: #2563eb; 
+  color: white; 
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: background 0.2s; 
+  font-size: 0.8rem; 
+}
+
 button.action-btn:hover { background: #1d4ed8; }
 button.action-btn.secondary { background: #6b7280; }
 button.action-btn.gdrive { background: #0f9d58; }
 button.action-btn.danger { background: #ef4444; }
 
-.file-input-wrapper { position: relative; display: inline-block; width: 100%; }
-.file-input-btn { width: 100%; padding: 8px; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; text-align: center; font-size: 0.85rem; }
+.file-input-wrapper { 
+  position: relative; 
+  display: inline-block; 
+  width: 100%; 
+}
+
+.file-input-btn { 
+  width: 100%; 
+  padding: 8px; 
+  background: #10b981; 
+  color: white; 
+  border: none; 
+  border-radius: 6px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  text-align: center; 
+  font-size: 0.8rem; 
+}
+
 .file-input-btn.secondary { background: #4b5563; }
-input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+input[type="file"] { 
+  position: absolute; 
+  left: 0; 
+  top: 0; 
+  opacity: 0; 
+  width: 100%; 
+  height: 100%; 
+  cursor: pointer; 
+}
 
 #workspace { 
   flex: 1; 
   position: relative; 
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
   overflow: auto; 
   width: 100%; 
+  -webkit-overflow-scrolling: touch;
 }
 
-#canvasContainer { transform-origin: center center; transition: transform 0.1s ease-out; }
-canvas { background: #ffffff; border: 1px solid #ccc; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: crosshair; display: block; }
+#canvasWrapper {
+  display: min-content;
+  min-width: 100%;
+  min-height: 100%;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.zoom-controls { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 90; background: rgba(255,255,255,0.9); padding: 6px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.15); }
-.zoom-btn { width: 36px; height: 36px; border: 1px solid #ccc; background: #fff; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+#canvasContainer { 
+  display: block;
+  flex-shrink: 0;
+}
+
+canvas { 
+  background: #ffffff; 
+  border: 1px solid #ccc; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+  cursor: crosshair; 
+  display: block; 
+  image-rendering: pixelated;
+}
+
+.zoom-controls { 
+  position: fixed; 
+  bottom: 36px; 
+  right: 12px; 
+  display: flex; 
+  gap: 6px; 
+  z-index: 90; 
+  background: rgba(255,255,255,0.9); 
+  padding: 4px; 
+  border-radius: 8px; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15); 
+}
+
+.zoom-btn { 
+  width: 32px; 
+  height: 32px; 
+  border: 1px solid #ccc; 
+  background: #fff; 
+  border-radius: 6px; 
+  font-weight: bold; 
+  font-size: 0.9rem; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
 .zoom-btn:hover { background: #f0f0f0; }
 
 #mainFooter {
@@ -122,7 +260,10 @@ canvas { background: #ffffff; border: 1px solid #ccc; box-shadow: 0 4px 12px rgb
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: #777;
   z-index: 100;
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0 8px;
 }
