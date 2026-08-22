@@ -29,3 +29,37 @@ Il progetto è ottimizzato per essere ospitato gratuitamente su **GitHub Pages**
     ├── image_converter.js # Conversione da foto a schema DMC
     ├── storage_local.js  # Import/Export file .cross e PNG
     └── storage_gdrive.js # Integrazione API Google Drive
+```
+
+---
+
+## 🌐 Pubblicazione su GitHub Pages
+
+1. Fai il push di questo repository su **GitHub**.
+2. Vai nelle **Settings** del repository su GitHub.
+3. Seleziona la voce **Pages** dal menu laterale sinistro.
+4. Sotto **Build and deployment**:
+   * **Source**: `Deploy from a branch`
+   * **Branch**: `main` (o `master`) / cartella `/ (root)`
+5. Clicca su **Save**.
+
+Il sito sarà raggiungibile in un paio di minuti all'indirizzo:  
+`https://tuo-username.github.io/nome-repository/`
+
+---
+
+## ⚙️ Configurazione Google Drive (Opzionale)
+
+Se desideri abilitare il pulsante "Salva su Google Drive":
+
+1. Vai su [Google Cloud Console](https://console.cloud.google.com/).
+2. Crea un nuovo progetto e abilita le **Google Drive API**.
+3. Configura la schermata consenso OAuth e crea un **ID Client OAuth 2.0** per applicazioni web.
+4. Aggiungi l'URL del tuo sito GitHub Pages (`https://tuo-username.github.io`) nelle **Origini JavaScript autorizzate**.
+5. Apri il file `js/storage_gdrive.js` e sostituisci il valore della costante `GOOGLE_CLIENT_ID` con il tuo Client ID.
+
+---
+
+## 📄 Licenza
+
+Questo progetto è distribuito sotto licenza MIT. Libero di utilizzarlo, modificarlo e distribuirlo.
