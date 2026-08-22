@@ -169,3 +169,62 @@ window.addEventListener('DOMContentLoaded', () => {
   renderPaletteSelect();
   initCanvas();
 });
+
+
+
+// Salva lo stato del progetto in un file .cross (JSON)
+function exportProjectToLocal() {
+  const projectData = {
+    version: "1.0",
+    gridWidth: gridWidth,
+    gridHeight: gridHeight,
+    cellSize: cellSize,
+    gridData: gridData
+  };
+
+  const jsonString = JSON.stringify(projectData, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const link = document.createElement('a');
+  
+  link.download = 'progetto.cross';
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  
+  URL.revokeObjectURL(link.href);
+}
+
+function exportPNG() {
+  const link = document.createElement('a');
+  link.download = 'schema-punto-croce.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// Importa un file .cross o .json salvato in precedenza
+function importProjectFromLocal(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.gridWidth && data.gridHeight && data.gridData) {
+        gridWidth = data.gridWidth;
+        gridHeight = data.gridHeight;
+        gridData = data.gridData;
+
+        // Aggiorna gli input nella sidebar
+        document.getElementById('gridWidthInput').value = gridWidth;
+        document.getElementById('gridHeightInput').value = gridHeight;
+
+        initCanvas();
+      } else {
+        alert('File non valido o corrotto.');
+      }
+    } catch (err) {
+      alert('Errore nella lettura del file.');
+    }
+  };
+  reader.readAsText(file);
+}
