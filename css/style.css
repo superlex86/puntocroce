@@ -1,7 +1,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: system-ui, -apple-system, sans-serif; display: flex; height: 100vh; background: #f4f5f7; }
 
-#sidebar { width: 320px; background: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+#sidebar { width: 320px; background: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; justify-content: space-between; }
 h2 { font-size: 1.2rem; color: #333; }
 .section { display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
 label { font-size: 0.85rem; font-weight: 600; color: #666; }
@@ -25,14 +25,7 @@ button.action-btn.danger:hover { background: #dc2626; }
 .file-input-btn.secondary { background: #4b5563; }
 input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 
+.sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 0.75rem; color: #888; text-align: center; }
+
 #workspace { flex: 1; display: flex; justify-content: center; align-items: center; overflow: auto; padding: 20px; }
 canvas { background: #ffffff; border: 1px solid #ccc; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: crosshair; }
-
-/* Modali */
-.modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
-.modal-content { background: white; padding: 24px; border-radius: 8px; width: 320px; display: flex; flex-direction: column; gap: 12px; position: relative; }
-.modal-content.wide { width: 500px; }
-.modal-content input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
-.close { position: absolute; right: 16px; top: 12px; font-size: 1.5rem; cursor: pointer; }
-.projects-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
-.project-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 6px; }
