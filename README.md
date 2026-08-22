@@ -46,6 +46,9 @@ Il progetto è ottimizzato per essere ospitato gratuitamente su **GitHub Pages**
 Il sito sarà raggiungibile in un paio di minuti all'indirizzo:  
 `https://tuo-username.github.io/nome-repository/`
 
+Nel nostro caso:
+[https://superlex86.github.io/puntocroce/](https://superlex86.github.io/puntocroce/)
+
 ---
 
 ## ⚙️ Configurazione Google Drive (Opzionale)
