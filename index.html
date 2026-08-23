@@ -44,10 +44,9 @@
 
     <div class="section">
       <label>Carica Foto per Schema</label>
-      <div class="file-input-wrapper">
-        <button class="file-input-btn">📷 Converti Foto...</button>
-        <input type="file" id="imageLoader" accept="image/*">
-      </div>
+      <button class="action-btn" onclick="openImageConverterModal()">📷 Converti Foto...</button>
+      <input type="file" id="imageLoader" accept="image/*" style="display: none;">
+    </div>
     </div>
     
     <div class="section">
@@ -71,6 +70,34 @@
       <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>
     </div>
   </aside>
+
+  <!-- Modal Informativa per Conversione Foto -->
+  <div id="imageConverterModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📷 Converti Foto in Schema Punto Croce</h2>
+        <button class="modal-close" onclick="closeImageConverterModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>⚠️ Limitazioni della Conversione:</strong></p>
+        <ul>
+          <li>La conversione usa <strong>solo 29 colori DMC</strong> disponibili nella palette</li>
+          <li>L'immagine sarà <strong>posterizzata</strong> (riduzione di colori)</li>
+          <li>La risoluzione dello schema dipende dalla <strong>dimensione della griglia</strong></li>
+        </ul>
+        <p><strong>💡 Per Migliori Risultati:</strong></p>
+        <ul>
+          <li>Aumenta le <strong>dimensioni della griglia</strong> (es. da 50×50 a 100×100) prima di convertire</li>
+          <li>Usa <strong>immagini semplici</strong> con pochi colori ben definiti</li>
+          <li>Evita foto sfumate o con molte sfumature di colore</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn secondary" onclick="closeImageConverterModal()">Chiudi</button>
+        <button class="action-btn" onclick="proceedWithImageConversion()">Procedi</button>
+      </div>
+    </div>
+  </div>
 
   <main id="workspace">
     <div class="zoom-controls">

@@ -196,3 +196,20 @@ window.addEventListener('DOMContentLoaded', () => {
   if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
   initCanvas();
 });
+
+// Funzioni per la modal di conversione foto
+function openImageConverterModal() {
+  const modal = document.getElementById('imageConverterModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeImageConverterModal() {
+  const modal = document.getElementById('imageConverterModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function proceedWithImageConversion() {
+  closeImageConverterModal();
+  const fileInput = document.getElementById('imageLoader');
+  if (fileInput) fileInput.click();
+}
