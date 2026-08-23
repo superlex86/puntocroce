@@ -3,6 +3,10 @@ let tokenClient;
 
 function initGoogleDrive() {
   if (typeof google === 'undefined') return;
+  if (GOOGLE_CLIENT_ID.includes('IL_TUO_CLIENT_ID')) {
+    alert('⚠️ Errore: Google Client ID non configurato. Vai su https://console.cloud.google.com/ per ottenere un Client ID valido, poi aggiorna storage_gdrive.js');
+    return;
+  }
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: GOOGLE_CLIENT_ID,
     scope: 'https://www.googleapis.com/auth/drive.file',
@@ -24,7 +28,14 @@ function saveToDrive() {
 }
 
 async function uploadToGoogleDrive(accessToken) {
-  const fileContent = JSON.stringify({ grid: gridData, cols: COLS, rows: ROWS });
+  const projectData = {
+    title: 'Schema Punto Croce',
+    gridWidth: gridWidth,
+    gridHeight: gridHeight,
+    cellSize: cellSize,
+    gridData: gridData
+  };
+  const fileContent = JSON.stringify(projectData);
   const file = new Blob([fileContent], { type: 'application/json' });
   
   const metadata = {

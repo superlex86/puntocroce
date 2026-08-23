@@ -85,4 +85,6 @@ function importProjectFromLocal(event) {
     }
   };
   reader.readAsText(file);
+  // Reset file input per permettere la selezione dello stesso file
+  event.target.value = '';
 }

@@ -5,36 +5,46 @@ let currentZoom = 1;
 let selectedColor = '#000000';
 let gridData = {};
 
+// Funzione helper per convertire HEX a RGB
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? [
+    parseInt(result[1], 16),
+    parseInt(result[2], 16),
+    parseInt(result[3], 16)
+  ] : [0, 0, 0];
+}
+
 const dmcPalette = [
-  { code: '310', name: 'Nero', hex: '#000000' },
-  { code: 'BLANC', name: 'Bianco Neve', hex: '#FFFFFF' },
-  { code: '666', name: 'Rosso Brillante', hex: '#E31D2B' },
-  { code: '321', name: 'Rosso', hex: '#C71123' },
-  { code: '498', name: 'Rosso Scuro', hex: '#A70C1B' },
-  { code: '815', name: 'Garnet / Borgogna', hex: '#770712' },
-  { code: '602', name: 'Rosa Cranberry', hex: '#E3337A' },
-  { code: '605', name: 'Rosa Chiaro', hex: '#FA92BA' },
-  { code: '743', name: 'Giallo Medio', hex: '#F3C010' },
-  { code: '745', name: 'Giallo Chiaro', hex: '#FFE79A' },
-  { code: '972', name: 'Giallo Canarino', hex: '#FFBC00' },
-  { code: '740', name: 'Arancione', hex: '#FF6F00' },
-  { code: '900', name: 'Arancione Scuro', hex: '#D73B00' },
-  { code: '702', name: 'Verde Erba', hex: '#11A843' },
-  { code: '700', name: 'Verde Brillante', hex: '#008733' },
-  { code: '699', name: 'Verde Intenso', hex: '#006B27' },
-  { code: '986', name: 'Verde Foresta', hex: '#17401B' },
-  { code: '826', name: 'Blu Medio', hex: '#4B88B3' },
-  { code: '796', name: 'Blu Scuro Royal', hex: '#112C6E' },
-  { code: '820', name: 'Blu Notte Intenso', hex: '#0A1845' },
-  { code: '208', name: 'Lilla Scuro', hex: '#83418A' },
-  { code: '209', name: 'Lilla', hex: '#A568A9' },
-  { code: '211', name: 'Lilla Chiarissimo', hex: '#D9B1DA' },
-  { code: '434', name: 'Marrone Cammello', hex: '#955427' },
-  { code: '801', name: 'Marrone Scuro', hex: '#532D11' },
-  { code: '3371', name: 'Marrone Nero', hex: '#1E0E04' },
-  { code: '415', name: 'Grigio Perla', hex: '#D3D3D5' },
-  { code: '318', name: 'Grigio Medio', hex: '#9B9B9D' },
-  { code: '413', name: 'Grigio Antracite', hex: '#545456' }
+  { code: '310', name: 'Nero', hex: '#000000', rgb: hexToRgb('#000000') },
+  { code: 'BLANC', name: 'Bianco Neve', hex: '#FFFFFF', rgb: hexToRgb('#FFFFFF') },
+  { code: '666', name: 'Rosso Brillante', hex: '#E31D2B', rgb: hexToRgb('#E31D2B') },
+  { code: '321', name: 'Rosso', hex: '#C71123', rgb: hexToRgb('#C71123') },
+  { code: '498', name: 'Rosso Scuro', hex: '#A70C1B', rgb: hexToRgb('#A70C1B') },
+  { code: '815', name: 'Garnet / Borgogna', hex: '#770712', rgb: hexToRgb('#770712') },
+  { code: '602', name: 'Rosa Cranberry', hex: '#E3337A', rgb: hexToRgb('#E3337A') },
+  { code: '605', name: 'Rosa Chiaro', hex: '#FA92BA', rgb: hexToRgb('#FA92BA') },
+  { code: '743', name: 'Giallo Medio', hex: '#F3C010', rgb: hexToRgb('#F3C010') },
+  { code: '745', name: 'Giallo Chiaro', hex: '#FFE79A', rgb: hexToRgb('#FFE79A') },
+  { code: '972', name: 'Giallo Canarino', hex: '#FFBC00', rgb: hexToRgb('#FFBC00') },
+  { code: '740', name: 'Arancione', hex: '#FF6F00', rgb: hexToRgb('#FF6F00') },
+  { code: '900', name: 'Arancione Scuro', hex: '#D73B00', rgb: hexToRgb('#D73B00') },
+  { code: '702', name: 'Verde Erba', hex: '#11A843', rgb: hexToRgb('#11A843') },
+  { code: '700', name: 'Verde Brillante', hex: '#008733', rgb: hexToRgb('#008733') },
+  { code: '699', name: 'Verde Intenso', hex: '#006B27', rgb: hexToRgb('#006B27') },
+  { code: '986', name: 'Verde Foresta', hex: '#17401B', rgb: hexToRgb('#17401B') },
+  { code: '826', name: 'Blu Medio', hex: '#4B88B3', rgb: hexToRgb('#4B88B3') },
+  { code: '796', name: 'Blu Scuro Royal', hex: '#112C6E', rgb: hexToRgb('#112C6E') },
+  { code: '820', name: 'Blu Notte Intenso', hex: '#0A1845', rgb: hexToRgb('#0A1845') },
+  { code: '208', name: 'Lilla Scuro', hex: '#83418A', rgb: hexToRgb('#83418A') },
+  { code: '209', name: 'Lilla', hex: '#A568A9', rgb: hexToRgb('#A568A9') },
+  { code: '211', name: 'Lilla Chiarissimo', hex: '#D9B1DA', rgb: hexToRgb('#D9B1DA') },
+  { code: '434', name: 'Marrone Cammello', hex: '#955427', rgb: hexToRgb('#955427') },
+  { code: '801', name: 'Marrone Scuro', hex: '#532D11', rgb: hexToRgb('#532D11') },
+  { code: '3371', name: 'Marrone Nero', hex: '#1E0E04', rgb: hexToRgb('#1E0E04') },
+  { code: '415', name: 'Grigio Perla', hex: '#D3D3D5', rgb: hexToRgb('#D3D3D5') },
+  { code: '318', name: 'Grigio Medio', hex: '#9B9B9D', rgb: hexToRgb('#9B9B9D') },
+  { code: '413', name: 'Grigio Antracite', hex: '#545456', rgb: hexToRgb('#545456') }
 ];
 
 const canvas = document.getElementById('crossStitchCanvas');
@@ -134,10 +144,12 @@ function applyZoom() {
 function resizeGridFromInput() {
   const w = parseInt(document.getElementById('gridWidthInput').value);
   const h = parseInt(document.getElementById('gridHeightInput').value);
-  if (w > 0 && h > 0) {
+  if (w > 0 && h > 0 && w <= 200 && h <= 200) {
     gridWidth = w;
     gridHeight = h;
     initCanvas();
+  } else {
+    alert('Dimensioni griglia non valide. Usa valori tra 10 e 200.');
   }
 }
 

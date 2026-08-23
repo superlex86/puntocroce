@@ -26,21 +26,27 @@ document.getElementById('imageLoader').addEventListener('change', function(e) {
     img.onload = function() {
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d');
-      tempCanvas.width = COLS;
-      tempCanvas.height = ROWS;
+      tempCanvas.width = gridWidth;
+      tempCanvas.height = gridHeight;
 
-      tempCtx.drawImage(img, 0, 0, COLS, ROWS);
-      const imgData = tempCtx.getImageData(0, 0, COLS, ROWS).data;
+      tempCtx.drawImage(img, 0, 0, gridWidth, gridHeight);
+      const imgData = tempCtx.getImageData(0, 0, gridWidth, gridHeight).data;
 
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const idx = (r * COLS + c) * 4;
-          gridData[r][c] = findClosestDmcColor(imgData[idx], imgData[idx+1], imgData[idx+2], imgData[idx+3]);
+      for (let y = 0; y < gridHeight; y++) {
+        for (let x = 0; x < gridWidth; x++) {
+          const idx = (y * gridWidth + x) * 4;
+          const color = findClosestDmcColor(imgData[idx], imgData[idx+1], imgData[idx+2], imgData[idx+3]);
+          if (color) {
+            gridData[`${x},${y}`] = color.hex;
+          }
         }
       }
-      draw();
+      drawGrid();
+      alert('Immagine convertita in schema punto croce!');
     };
     img.src = event.target.result;
   };
   reader.readAsDataURL(file);
+  // Reset file input per permettere la selezione dello stesso file
+  e.target.value = '';
 });
