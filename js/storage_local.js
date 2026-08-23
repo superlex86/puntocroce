@@ -1,16 +1,16 @@
-// Esporta la griglia completa con sfondo bianco e linee in PNG
+// Esporta la griglia completa con il colore di sfondo scelto e linee in PNG
 function exportPNG() {
   const canvas = document.getElementById('crossStitchCanvas');
   if (!canvas) return;
 
-  // Crea un canvas temporaneo in memoria per garantire uno sfondo bianco coprente
+  // Crea un canvas temporaneo in memoria per garantire uno sfondo coprente
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = canvas.width;
   exportCanvas.height = canvas.height;
   const exportCtx = exportCanvas.getContext('2d');
 
-  // 1. Riempie lo sfondo di BIANCO (evita l'effetto negativo/trasparente)
-  exportCtx.fillStyle = '#FFFFFF';
+  // 1. Riempie lo sfondo con il colore scelto
+  exportCtx.fillStyle = canvasBackgroundColor;
   exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
   // 2. Copia la griglia e i crocette dal canvas principale
@@ -30,14 +30,14 @@ function exportPDF() {
   const canvas = document.getElementById('crossStitchCanvas');
   if (!canvas) return;
 
-  // Crea un canvas temporaneo in memoria per garantire uno sfondo bianco coprente
+  // Crea un canvas temporaneo in memoria per garantire uno sfondo coprente
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = canvas.width;
   exportCanvas.height = canvas.height;
   const exportCtx = exportCanvas.getContext('2d');
 
-  // 1. Riempie lo sfondo di BIANCO
-  exportCtx.fillStyle = '#FFFFFF';
+  // 1. Riempie lo sfondo con il colore scelto
+  exportCtx.fillStyle = canvasBackgroundColor;
   exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
   // 2. Copia la griglia e i crocette dal canvas principale

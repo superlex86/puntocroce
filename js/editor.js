@@ -3,6 +3,7 @@ let gridHeight = 50;
 let cellSize = 15;
 let currentZoom = 1;
 let selectedColor = '#000000';
+let canvasBackgroundColor = '#FFFFFF';
 let gridData = {};
 
 // Funzione helper per convertire HEX a RGB
@@ -75,6 +76,13 @@ function onColorSelectChange(hexValue) {
   if (swatch) swatch.style.backgroundColor = hexValue;
 }
 
+function onCanvasBackgroundChange(hexValue) {
+  canvasBackgroundColor = hexValue;
+  const bgSwatch = document.getElementById('backgroundSwatch');
+  if (bgSwatch) bgSwatch.style.backgroundColor = hexValue;
+  drawGrid();
+}
+
 function initCanvas() {
   canvas.width = gridWidth * cellSize;
   canvas.height = gridHeight * cellSize;
@@ -83,14 +91,18 @@ function initCanvas() {
 }
 
 function drawGrid() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Riempi lo sfondo con il colore selezionato
+  ctx.fillStyle = canvasBackgroundColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   
+  // Disegna i punti colorati
   for (let key in gridData) {
     const [x, y] = key.split(',').map(Number);
     ctx.fillStyle = gridData[key];
     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
   }
 
+  // Disegna le linee della griglia
   ctx.lineWidth = 1;
   for (let x = 0; x <= gridWidth; x++) {
     ctx.strokeStyle = (x % 10 === 0) ? '#000000' : '#e0e0e0';
@@ -179,5 +191,8 @@ canvas.addEventListener('click', (e) => {
 window.addEventListener('resize', resetZoomFit);
 window.addEventListener('DOMContentLoaded', () => {
   renderPaletteSelect();
+  // Inizializza il preview del colore di sfondo
+  const bgSwatch = document.getElementById('backgroundSwatch');
+  if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
   initCanvas();
 });

@@ -30,6 +30,19 @@
     </div>
 
     <div class="section">
+      <label for="backgroundColorSelect">Colore Sfondo Lavoro</label>
+      <div class="color-select-wrapper">
+        <span id="backgroundSwatch" class="swatch-preview"></span>
+        <select id="backgroundColorSelect" class="dmc-dropdown" onchange="onCanvasBackgroundChange(this.value)">
+          <option value="#FFFFFF">Bianco</option>
+          <option value="#FFE79A">Giallo Chiaro</option>
+          <option value="#D3D3D3">Grigio</option>
+          <option value="#000000">Nero</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
       <label>Carica Foto per Schema</label>
       <div class="file-input-wrapper">
         <button class="file-input-btn">📷 Converti Foto...</button>
