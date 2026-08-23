@@ -48,6 +48,7 @@
     <div class="section">
       <label>Importa / Esporta</label>
       <button class="action-btn" onclick="exportPNG()">Esporta Immagine (PNG)</button>
+      <button class="action-btn" onclick="exportPDF()">Esporta PDF</button>
       <button class="action-btn secondary" onclick="exportProjectToLocal()">Salva File (.cross)</button>
       <div class="file-input-wrapper">
         <button class="file-input-btn secondary">Carica File (.cross)</button>
@@ -74,6 +75,7 @@
   </footer>
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="js/editor.js"></script>
   <script src="js/image_converter.js"></script>
   <script src="js/storage_local.js"></script>

@@ -25,6 +25,58 @@ function exportPNG() {
   document.body.removeChild(link);
 }
 
+// Esporta la griglia completa con sfondo bianco e linee in PDF (singola pagina A4)
+function exportPDF() {
+  const canvas = document.getElementById('crossStitchCanvas');
+  if (!canvas) return;
+
+  // Crea un canvas temporaneo in memoria per garantire uno sfondo bianco coprente
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = canvas.width;
+  exportCanvas.height = canvas.height;
+  const exportCtx = exportCanvas.getContext('2d');
+
+  // 1. Riempie lo sfondo di BIANCO
+  exportCtx.fillStyle = '#FFFFFF';
+  exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+
+  // 2. Copia la griglia e i crocette dal canvas principale
+  exportCtx.drawImage(canvas, 0, 0);
+
+  // 3. Crea PDF con jsPDF
+  if (typeof window.jspdf === 'undefined') {
+    alert('Libreria PDF non caricata. Riprova.');
+    return;
+  }
+
+  const imgData = exportCanvas.toDataURL('image/png');
+  const pdf = new window.jspdf.jsPDF({
+    orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  const padding = 10;
+  const imgWidth = pdfWidth - 2 * padding;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  // Verifica se l'immagine entra in una pagina
+  if (imgHeight <= pdfHeight - 2 * padding) {
+    const yOffset = (pdfHeight - imgHeight) / 2;
+    pdf.addImage(imgData, 'PNG', padding, yOffset, imgWidth, imgHeight);
+  } else {
+    // Se troppo grande, adatta l'altezza
+    const maxImgHeight = pdfHeight - 2 * padding;
+    const scaledWidth = (maxImgHeight * canvas.width) / canvas.height;
+    const xOffset = (pdfWidth - scaledWidth) / 2;
+    pdf.addImage(imgData, 'PNG', xOffset, padding, scaledWidth, maxImgHeight);
+  }
+
+  pdf.save('schema-punto-croce.pdf');
+}
+
 // Salva lo stato del progetto in un file .cross (JSON)
 function exportProjectToLocal() {
   const projectData = {
