@@ -48,6 +48,14 @@
       <input type="file" id="imageLoader" accept="image/*" style="display: none;">
     </div>
     </div>
+
+    <div class="section">
+      <label for="renderStyleSelect">Stile Visualizzazione</label>
+      <select id="renderStyleSelect" class="dmc-dropdown" onchange="onRenderStyleChange(this.value)">
+        <option value="square">■ Quadratini pieni</option>
+        <option value="cross">✕ Croci colorate</option>
+      </select>
+    </div>
     
     <div class="section">
       <label for="dmcSelect">Seleziona Filato DMC</label>

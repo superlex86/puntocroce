@@ -13,7 +13,7 @@ function exportPNG() {
   exportCtx.fillStyle = canvasBackgroundColor;
   exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
-  // 2. Copia la griglia e i crocette dal canvas principale
+  // Copia la visualizzazione corrente, inclusi stile e sfondo
   exportCtx.drawImage(canvas, 0, 0);
 
   // 3. Scarica l'immagine
@@ -40,7 +40,7 @@ function exportPDF() {
   exportCtx.fillStyle = canvasBackgroundColor;
   exportCtx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
 
-  // 2. Copia la griglia e i crocette dal canvas principale
+  // Copia la visualizzazione corrente, inclusi stile e sfondo
   exportCtx.drawImage(canvas, 0, 0);
 
   // 3. Crea PDF con jsPDF

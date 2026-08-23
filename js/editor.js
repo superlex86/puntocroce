@@ -4,6 +4,7 @@ let cellSize = 15;
 let currentZoom = 1;
 let selectedColor = '#000000';
 let canvasBackgroundColor = '#FFFFFF';
+let renderStyle = 'square';
 let gridData = {};
 
 // Funzione helper per convertire HEX a RGB
@@ -83,6 +84,11 @@ function onCanvasBackgroundChange(hexValue) {
   drawGrid();
 }
 
+function onRenderStyleChange(style) {
+  renderStyle = style;
+  drawGrid();
+}
+
 function initCanvas() {
   canvas.width = gridWidth * cellSize;
   canvas.height = gridHeight * cellSize;
@@ -95,15 +101,35 @@ function drawGrid() {
   ctx.fillStyle = canvasBackgroundColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Disegna i punti colorati
-  for (let key in gridData) {
-    const [x, y] = key.split(',').map(Number);
-    ctx.fillStyle = gridData[key];
-    ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  // Disegna i filati nello stile selezionato
+  if (renderStyle === 'cross') {
+    const padding = cellSize * 0.2;
+    ctx.lineWidth = Math.max(1.5, cellSize * 0.1);
+    ctx.lineCap = 'round';
+
+    for (let key in gridData) {
+      const [x, y] = key.split(',').map(Number);
+      const cellX = x * cellSize;
+      const cellY = y * cellSize;
+      ctx.strokeStyle = gridData[key];
+      ctx.beginPath();
+      ctx.moveTo(cellX + padding, cellY + padding);
+      ctx.lineTo(cellX + cellSize - padding, cellY + cellSize - padding);
+      ctx.moveTo(cellX + cellSize - padding, cellY + padding);
+      ctx.lineTo(cellX + padding, cellY + cellSize - padding);
+      ctx.stroke();
+    }
+  } else {
+    for (let key in gridData) {
+      const [x, y] = key.split(',').map(Number);
+      ctx.fillStyle = gridData[key];
+      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
   }
 
   // Disegna le linee della griglia
   ctx.lineWidth = 1;
+  ctx.lineCap = 'butt';
   for (let x = 0; x <= gridWidth; x++) {
     ctx.strokeStyle = (x % 10 === 0) ? '#000000' : '#e0e0e0';
     ctx.beginPath();
