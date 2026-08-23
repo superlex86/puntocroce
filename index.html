@@ -63,8 +63,8 @@
       <button class="action-btn" onclick="exportPDF()">Esporta PDF</button>
       <button class="action-btn secondary" onclick="exportProjectToLocal()">Salva File (.cross)</button>
       <div class="file-input-wrapper">
-        <button class="file-input-btn secondary">Carica File (.cross)</button>
-        <input type="file" id="localProjectLoader" accept=".cross,.json" onchange="importProjectFromLocal(event)">
+        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica File (.cross)</button>
+        <input type="file" id="localProjectLoader" accept=".cross,.json" onchange="importProjectFromLocal(event)" style="display: none;">
       </div>
       <button class="action-btn gdrive" onclick="saveToDrive()">☁️ Salva su Google Drive</button>
       <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>

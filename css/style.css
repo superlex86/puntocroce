@@ -158,8 +158,11 @@ button.action-btn {
 
 button.action-btn:hover { background: #1d4ed8; }
 button.action-btn.secondary { background: #6b7280; }
+button.action-btn.secondary:hover { background: #565e68; }
 button.action-btn.gdrive { background: #0f9d58; }
+button.action-btn.gdrive:hover { background: #0d8047; }
 button.action-btn.danger { background: #ef4444; }
+button.action-btn.danger:hover { background: #dc2626; }
 
 .file-input-wrapper { 
   position: relative; 
@@ -178,9 +181,13 @@ button.action-btn.danger { background: #ef4444; }
   cursor: pointer; 
   text-align: center; 
   font-size: 0.8rem; 
+  transition: background 0.2s; 
 }
 
-.file-input-btn.secondary { background: #4b5563; }
+.file-input-btn:hover { background: #059669; }
+
+.file-input-btn.secondary { background: #6b7280; }
+.file-input-btn.secondary:hover { background: #4b5563; }
 
 input[type="file"] { 
   position: absolute; 
