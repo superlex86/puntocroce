@@ -58,7 +58,7 @@ function getNextSchemaName() {
 function createNewSchema() {
   if (isDirty) {
     const warningText = document.getElementById('newSchemaWarningText');
-    if (warningText) warningText.textContent = `${schemaName} contiene modifiche non ancora esportate in un file JSON.`;
+    if (warningText) warningText.textContent = `${schemaName} contiene modifiche non ancora salvate in un file JSON.`;
     const modal = document.getElementById('newSchemaModal');
     if (modal) modal.style.display = 'flex';
     return;
