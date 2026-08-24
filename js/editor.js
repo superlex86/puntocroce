@@ -456,13 +456,13 @@ function applyZoom() {
 function resizeGridFromInput() {
   const w = parseInt(document.getElementById('gridWidthInput').value);
   const h = parseInt(document.getElementById('gridHeightInput').value);
-  if (w > 0 && h > 0 && w <= 200 && h <= 200) {
+  if (w >= 10 && h >= 10 && w <= 200 && h <= 200 && (w * h) <= 10000) {
     gridWidth = w;
     gridHeight = h;
     initCanvas();
     autoSaveToLocalStorage();
   } else {
-    alert('Dimensioni griglia non valide. Usa valori tra 10 e 200.');
+    alert('Dimensioni griglia non valide. Usa valori di larghezza e altezza tra 10 e 200, ma al massimo i punti gestibili sono 10000 (es: 100x100, 50x200, 200x50)');
   }
 }
 
