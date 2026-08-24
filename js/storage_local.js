@@ -25,7 +25,7 @@ function exportPNG() {
   document.body.removeChild(link);
 }
 
-// Esporta la griglia completa con sfondo bianco e linee in PDF (singola pagina A4)
+// Esporta la griglia completa con sfondo scelto in PDF (singola pagina A4)
 function exportPDF() {
   const canvas = document.getElementById('crossStitchCanvas');
   if (!canvas) return;
@@ -77,8 +77,8 @@ function exportPDF() {
   pdf.save('schema-punto-croce.pdf');
 }
 
-// Salva lo stato del progetto in un file .cross (JSON)
-function exportProjectToLocal() {
+// Salva lo stato del progetto con Web Share API (mobile) o Download diretto (desktop)
+async function exportProjectToLocal() {
   const projectData = {
     title: 'Schema Punto Croce',
     gridWidth: gridWidth,
@@ -88,19 +88,37 @@ function exportProjectToLocal() {
   };
 
   const jsonStr = JSON.stringify(projectData, null, 2);
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  
+  const file = new File([jsonStr], 'schema-punto-croce.json', { type: 'application/json' });
+
+  // Utilizza il menu di condivisione nativo del sistema operativo se disponibile (Android / iOS)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Schema Punto Croce',
+        text: 'Ecco il mio schema punto croce'
+      });
+      isDirty = false;
+      return;
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Errore nella condivisione:', err);
+      } else {
+        return; // L'utente ha annullato il menu di condivisione
+      }
+    }
+  }
+
+  // Fallback per browser PC desktop o browser mobile senza supporto Web Share API
+  const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'schema.cross';
-  
-  // Necessario per compatibilità con mobile/SPCK/Firefox
+  a.download = 'schema-punto-croce.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  
-  setTimeout(() => URL.revokeObjectURL(url), 100);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  isDirty = false;
 }
 
 // Carica un file .cross o .json salvato
@@ -128,6 +146,9 @@ function importProjectFromLocal(event) {
         if (inputH) inputH.value = gridHeight;
 
         initCanvas();
+        autoSaveToLocalStorage();
+        isDirty = false;
+
         alert('Progetto caricato con successo!');
       } else {
         alert('Formato file non valido.');

@@ -42,6 +42,7 @@ document.getElementById('imageLoader').addEventListener('change', function(e) {
         }
       }
       drawGrid();
+      autoSaveToLocalStorage();
       alert('Immagine convertita in schema punto croce!');
     };
     img.src = event.target.result;

@@ -7,6 +7,9 @@ let canvasBackgroundColor = '#FFFFFF';
 let renderStyle = 'square';
 let gridData = {};
 
+const AUTOSAVE_KEY = 'punto_croce_autosave';
+let isDirty = false;
+
 // Funzione helper per convertire HEX a RGB
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -54,6 +57,52 @@ const ctx = canvas.getContext('2d');
 const container = document.getElementById('canvasContainer');
 const sidebar = document.getElementById('sidebar');
 
+function autoSaveToLocalStorage() {
+  const state = {
+    gridWidth: gridWidth,
+    gridHeight: gridHeight,
+    cellSize: cellSize,
+    canvasBackgroundColor: canvasBackgroundColor,
+    renderStyle: renderStyle,
+    gridData: gridData,
+    updatedAt: new Date().toISOString()
+  };
+  localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+  isDirty = true;
+}
+
+function restoreFromLocalStorage() {
+  const saved = localStorage.getItem(AUTOSAVE_KEY);
+  if (!saved) return false;
+
+  try {
+    const state = JSON.parse(saved);
+    if (state.gridWidth && state.gridHeight && state.gridData) {
+      gridWidth = state.gridWidth;
+      gridHeight = state.gridHeight;
+      gridData = state.gridData;
+      if (state.canvasBackgroundColor) canvasBackgroundColor = state.canvasBackgroundColor;
+      if (state.renderStyle) renderStyle = state.renderStyle;
+
+      const inputW = document.getElementById('gridWidthInput');
+      const inputH = document.getElementById('gridHeightInput');
+      if (inputW) inputW.value = gridWidth;
+      if (inputH) inputH.value = gridHeight;
+
+      const bgSelect = document.getElementById('backgroundColorSelect');
+      if (bgSelect) bgSelect.value = canvasBackgroundColor;
+
+      const styleSelect = document.getElementById('renderStyleSelect');
+      if (styleSelect) styleSelect.value = renderStyle;
+
+      return true;
+    }
+  } catch (e) {
+    console.error('Errore nel caricamento del salvataggio automatico', e);
+  }
+  return false;
+}
+
 function renderPaletteSelect() {
   const select = document.getElementById('dmcSelect');
   if (!select) return;
@@ -82,11 +131,13 @@ function onCanvasBackgroundChange(hexValue) {
   const bgSwatch = document.getElementById('backgroundSwatch');
   if (bgSwatch) bgSwatch.style.backgroundColor = hexValue;
   drawGrid();
+  autoSaveToLocalStorage();
 }
 
 function onRenderStyleChange(style) {
   renderStyle = style;
   drawGrid();
+  autoSaveToLocalStorage();
 }
 
 function initCanvas() {
@@ -186,14 +237,19 @@ function resizeGridFromInput() {
     gridWidth = w;
     gridHeight = h;
     initCanvas();
+    autoSaveToLocalStorage();
   } else {
     alert('Dimensioni griglia non valide. Usa valori tra 10 e 200.');
   }
 }
 
 function clearGrid() {
-  gridData = {};
-  drawGrid();
+  if (confirm('Sei sicuro di voler svuotare l\'intera griglia?')) {
+    gridData = {};
+    localStorage.removeItem(AUTOSAVE_KEY);
+    isDirty = false;
+    drawGrid();
+  }
 }
 
 document.getElementById('toggleSidebarBtn').addEventListener('click', () => {
@@ -211,16 +267,35 @@ canvas.addEventListener('click', (e) => {
   if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight) {
     gridData[`${x},${y}`] = selectedColor;
     drawGrid();
+    autoSaveToLocalStorage();
+  }
+});
+
+window.addEventListener('beforeunload', (e) => {
+  if (isDirty && Object.keys(gridData).length > 0) {
+    e.preventDefault();
+    e.returnValue = '';
   }
 });
 
 window.addEventListener('resize', resetZoomFit);
+
 window.addEventListener('DOMContentLoaded', () => {
   renderPaletteSelect();
-  // Inizializza il preview del colore di sfondo
-  const bgSwatch = document.getElementById('backgroundSwatch');
-  if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
-  initCanvas();
+
+  if (restoreFromLocalStorage()) {
+    const bgSwatch = document.getElementById('backgroundSwatch');
+    if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
+    canvas.width = gridWidth * cellSize;
+    canvas.height = gridHeight * cellSize;
+    drawGrid();
+    resetZoomFit();
+  } else {
+    // Inizializza il preview del colore di sfondo
+    const bgSwatch = document.getElementById('backgroundSwatch');
+    if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
+    initCanvas();
+  }
 });
 
 // Funzioni per la modal di conversione foto
