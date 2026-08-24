@@ -11,7 +11,6 @@
   <header id="mainHeader">
     <h1 class="app-title">🪡</h1>
     <button id="toggleSidebarBtn" aria-label="Apri o chiudi gli strumenti">☰</button>
-    <button class="action-btn new" onclick="createNewSchema()">Nuovo</button>
     <form id="schemaNameForm" class="schema-name-form">
       <input id="schemaNameInput" class="schema-name-input" type="text" maxlength="100" value="Schema 1" aria-label="Nome dello schema">
     </form>
@@ -67,13 +66,6 @@
     </div>
 
     <div class="section">
-      <label>Carica Foto per Schema</label>
-      <button class="action-btn" onclick="openImageConverterModal()">📷 Converti Foto...</button>
-      <input type="file" id="imageLoader" accept="image/*" style="display: none;">
-    </div>
-    </div>
-
-    <div class="section">
       <label for="renderStyleSelect">Stile Visualizzazione</label>
       <select id="renderStyleSelect" class="dmc-dropdown" onchange="onRenderStyleChange(this.value)">
         <option value="square">■ Quadratini pieni</option>
@@ -87,18 +79,24 @@
         <span id="selectedSwatch" class="swatch-preview"></span>
         <select id="dmcSelect" class="dmc-dropdown" onchange="onColorSelectChange(this.value)"></select>
       </div>
-    </div>
-
+    </div>    
+    
     <div class="section">
-      <button class="action-btn" onclick="exportPNG()">Esporta Immagine (PNG)</button>
-      <button class="action-btn" onclick="exportPDF()">Esporta PDF</button>
-      <button class="action-btn secondary" onclick="exportProjectToLocal()">Scarica Schema (.json)</button>
+      <button class="action-btn new" onclick="createNewSchema()">Nuovo Schema</button>
+      <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>
+      <button class="action-btn secondary" onclick="exportProjectToLocal()">Scarica Schema su File</button>
       <div class="file-input-wrapper">
-        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica Schema (.json)</button>
+        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica Schema da File</button>
         <input type="file" id="localProjectLoader" accept=".json" onchange="importProjectFromLocal(event)" style="display: none;">
       </div>
-      <button class="action-btn gdrive" onclick="saveToDrive()">☁️ Salva su Google Drive</button>
-      <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>
+    </div>
+    
+    <div class="section">
+      <label>Importa / Esporta</label>
+      <button class="action-btn" onclick="openImageConverterModal()">📷 Converti Foto in Schema...</button>
+      <input type="file" id="imageLoader" accept="image/*" style="display: none;">
+      <button class="action-btn" onclick="exportPNG()">Esporta Schema come immagine</button>
+      <button class="action-btn" onclick="exportPDF()">Esporta Schema come PDF</button>
     </div>
   </aside>
 
