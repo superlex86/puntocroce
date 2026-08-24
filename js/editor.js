@@ -1,5 +1,5 @@
-let gridWidth = 50;
-let gridHeight = 50;
+let gridWidth = 30;
+let gridHeight = 30;
 let cellSize = 15;
 let currentZoom = 1;
 let selectedColor = '#000000';
@@ -33,7 +33,7 @@ function updateSchemaName(value) {
   schemaNameWasRenamed = nextName !== schemaName;
   schemaName = nextName;
   autoSaveToLocalStorage();
-  updateProjectStatus('Nome modificato - autosalvataggio locale aggiornato');
+  updateProjectStatus('Nome modificato - autosalvataggio pagina aggiornato');
 }
 
 function markAutosaveAsExported() {
@@ -79,8 +79,8 @@ async function exportBeforeNewSchema() {
 
 function proceedWithNewSchema() {
   closeNewSchemaModal();
-  gridWidth = 50;
-  gridHeight = 50;
+  gridWidth = 30;
+  gridHeight = 30;
   cellSize = 15;
   canvasBackgroundColor = '#FFFFFF';
   renderStyle = 'square';
@@ -108,7 +108,7 @@ function proceedWithNewSchema() {
     console.error('Errore nella rimozione del salvataggio automatico', e);
   }
   initCanvas();
-  updateProjectStatus('Nuovo schema - nessun autosalvataggio locale');
+  updateProjectStatus('Nuovo schema - nessun autosalvataggio pagina');
 }
 
 // Funzione helper per convertire HEX a RGB
@@ -175,10 +175,10 @@ function autoSaveToLocalStorage() {
 
   try {
     localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
-    updateProjectStatus('Autosalvataggio locale aggiornato - scarica lo schema per conservarlo sul dispositivo');
+    updateProjectStatus('Autosalvataggio pagina aggiornato - scarica lo schema per conservarlo sul dispositivo');
   } catch (e) {
     console.error('Errore nel salvataggio automatico locale', e);
-    updateProjectStatus('Autosalvataggio locale non disponibile');
+    updateProjectStatus('Autosalvataggio pagina non disponibile');
   }
 }
 
@@ -188,12 +188,12 @@ function restoreFromLocalStorage() {
     saved = localStorage.getItem(AUTOSAVE_KEY);
   } catch (e) {
     console.error('Errore nella lettura del salvataggio automatico', e);
-    updateProjectStatus('Autosalvataggio locale non disponibile');
+    updateProjectStatus('Autosalvataggio pagina non disponibile');
     return false;
   }
 
   if (!saved) {
-    updateProjectStatus('Nessun autosalvataggio locale');
+    updateProjectStatus('Nessun autosalvataggio pagina');
     return false;
   }
 
@@ -208,7 +208,7 @@ function restoreFromLocalStorage() {
       !Array.isArray(state.gridData);
 
     if (!validDimensions || !validGridData) {
-      updateProjectStatus('Autosalvataggio locale non valido');
+      updateProjectStatus('Autosalvataggio pagina non valido');
       return false;
     }
 
@@ -236,11 +236,11 @@ function restoreFromLocalStorage() {
     const schemaNameInput = document.getElementById('schemaNameInput');
     if (schemaNameInput) schemaNameInput.value = schemaName;
 
-    updateProjectStatus('Autosalvataggio locale ripristinato - verifica o scarica lo schema');
+    updateProjectStatus('Autosalvataggio pagina ripristinato - verifica o scarica lo schema');
     return true;
   } catch (e) {
     console.error('Errore nel caricamento del salvataggio automatico', e);
-    updateProjectStatus('Autosalvataggio locale non valido');
+    updateProjectStatus('Autosalvataggio pagina non valido');
   }
   return false;
 }
@@ -472,7 +472,7 @@ function clearGrid() {
     localStorage.removeItem(AUTOSAVE_KEY);
     isDirty = false;
     drawGrid();
-    updateProjectStatus('Griglia vuota - nessun autosalvataggio locale');
+    updateProjectStatus('Griglia vuota - nessun autosalvataggio pagina');
   }
 }
 
@@ -533,7 +533,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const bgSwatch = document.getElementById('backgroundSwatch');
     if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
     initCanvas();
-    updateProjectStatus('Nessun autosalvataggio locale');
+    updateProjectStatus('Nessun autosalvataggio pagina');
   }
 });
 

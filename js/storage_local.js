@@ -100,7 +100,7 @@ async function exportProjectToLocal() {
       });
       isDirty = false;
       markAutosaveAsExported();
-      updateProjectStatus('Schema scaricato - autosalvataggio locale sincronizzato');
+      updateProjectStatus('Schema scaricato - autosalvataggio pagina sincronizzato');
       return true;
     } catch (err) {
       if (err.name !== 'AbortError') {
@@ -122,7 +122,7 @@ async function exportProjectToLocal() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   isDirty = false;
   markAutosaveAsExported();
-  updateProjectStatus('Schema scaricato - autosalvataggio locale sincronizzato');
+  updateProjectStatus('Schema scaricato - autosalvataggio pagina sincronizzato');
   return true;
 }
 
@@ -160,7 +160,7 @@ function importProjectFromLocal(event) {
         autoSaveToLocalStorage();
         isDirty = false;
         markAutosaveAsExported();
-        updateProjectStatus('Schema caricato - autosalvataggio locale sincronizzato');
+        updateProjectStatus('Schema caricato - autosalvataggio pagina sincronizzato');
 
         alert('Schema caricato con successo!');
       } else {
