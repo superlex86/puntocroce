@@ -13,6 +13,7 @@ const DEFAULT_SCHEMA_PREFIX = `${PROJECT_NAME} `;
 let schemaName = `${DEFAULT_SCHEMA_PREFIX}1`;
 let schemaNameWasRenamed = false;
 let isDirty = false;
+const RULER_SIZE = 25; // Spazio in pixel per i righelli in alto e a sinistra
 
 function updateProjectStatus(status) {
   const statusElement = document.getElementById('projectStatus');
@@ -282,60 +283,141 @@ function onRenderStyleChange(style) {
 }
 
 function initCanvas() {
-  canvas.width = gridWidth * cellSize;
-  canvas.height = gridHeight * cellSize;
+  canvas.width = (gridWidth * cellSize) + (RULER_SIZE * 2);
+  canvas.height = (gridHeight * cellSize) + (RULER_SIZE * 2);
   drawGrid();
   resetZoomFit();
 }
 
 function drawGrid() {
-  // Riempi lo sfondo con il colore selezionato
-  ctx.fillStyle = canvasBackgroundColor;
+  const gridPixelWidth = gridWidth * cellSize;
+  const gridPixelHeight = gridHeight * cellSize;
+
+  // 1. Sfondo completo canvas e area lavoro
+  ctx.fillStyle = '#f0f0f0';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  // Disegna i filati nello stile selezionato
+
+  ctx.fillStyle = canvasBackgroundColor;
+  ctx.fillRect(RULER_SIZE, RULER_SIZE, gridPixelWidth, gridPixelHeight);
+
+  // 2. Disegno Crocette / Quadrati (con offset RULER_SIZE)
   if (renderStyle === 'cross') {
     ctx.lineWidth = Math.max(1.5, cellSize * 0.1);
-    const padding = Math.max(1, ctx.lineWidth * 0.5);
     ctx.lineCap = 'butt';
-
     for (let key in gridData) {
       const [x, y] = key.split(',').map(Number);
-      const cellX = x * cellSize;
-      const cellY = y * cellSize;
+      const cellX = RULER_SIZE + (x * cellSize);
+      const cellY = RULER_SIZE + (y * cellSize);
       ctx.strokeStyle = gridData[key];
       ctx.beginPath();
-      ctx.moveTo(cellX + padding, cellY + padding);
-      ctx.lineTo(cellX + cellSize - padding, cellY + cellSize - padding);
-      ctx.moveTo(cellX + cellSize - padding, cellY + padding);
-      ctx.lineTo(cellX + padding, cellY + cellSize - padding);
+      ctx.moveTo(cellX, cellY);
+      ctx.lineTo(cellX + cellSize, cellY + cellSize);
+      ctx.moveTo(cellX + cellSize, cellY);
+      ctx.lineTo(cellX, cellY + cellSize);
       ctx.stroke();
     }
   } else {
     for (let key in gridData) {
       const [x, y] = key.split(',').map(Number);
       ctx.fillStyle = gridData[key];
-      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      ctx.fillRect(RULER_SIZE + (x * cellSize), RULER_SIZE + (y * cellSize), cellSize, cellSize);
     }
   }
 
-  // Disegna le linee della griglia
+  // 3. Linee Griglia
   ctx.lineWidth = 1;
   ctx.lineCap = 'butt';
   for (let x = 0; x <= gridWidth; x++) {
+    const posX = RULER_SIZE + (x * cellSize);
     ctx.strokeStyle = (x % 10 === 0) ? '#000000' : '#e0e0e0';
     ctx.beginPath();
-    ctx.moveTo(x * cellSize, 0);
-    ctx.lineTo(x * cellSize, canvas.height);
+    ctx.moveTo(posX, RULER_SIZE);
+    ctx.lineTo(posX, RULER_SIZE + gridPixelHeight);
     ctx.stroke();
   }
   for (let y = 0; y <= gridHeight; y++) {
+    const posY = RULER_SIZE + (y * cellSize);
     ctx.strokeStyle = (y % 10 === 0) ? '#000000' : '#e0e0e0';
     ctx.beginPath();
-    ctx.moveTo(0, y * cellSize);
-    ctx.lineTo(canvas.width, y * cellSize);
+    ctx.moveTo(RULER_SIZE, posY);
+    ctx.lineTo(RULER_SIZE + gridPixelWidth, posY);
     ctx.stroke();
   }
+
+  // 4. Disegno fascia dei 4 righelli (Alto, Basso, Sinistra, Destra)
+  ctx.fillStyle = '#e2e8f0';
+  ctx.fillRect(0, 0, canvas.width, RULER_SIZE); // Alto
+  ctx.fillRect(0, canvas.height - RULER_SIZE, canvas.width, RULER_SIZE); // Basso
+  ctx.fillRect(0, 0, RULER_SIZE, canvas.height); // Sinistra
+  ctx.fillRect(canvas.width - RULER_SIZE, 0, RULER_SIZE, canvas.height); // Destra
+
+  // Bordi interni di separazione tra righelli e griglia
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(RULER_SIZE, RULER_SIZE, gridPixelWidth, gridPixelHeight);
+
+  // Stile Testo e Tacche
+  ctx.fillStyle = '#334155';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // RIGHELLI ORIZZONTALI (Alto & Basso)
+  // Saltiamo x == 0 e x == gridWidth per non stampare valori negli angoli
+  for (let x = 1; x < gridWidth; x++) {
+    const posX = RULER_SIZE + (x * cellSize);
+    if (x % 10 === 0) {
+      // Testo alto e basso
+      ctx.fillText(x.toString(), posX, RULER_SIZE / 2);
+      ctx.fillText(x.toString(), posX, canvas.height - (RULER_SIZE / 2));
+      
+      // Tacche
+      ctx.beginPath();
+      ctx.moveTo(posX, RULER_SIZE - 4); ctx.lineTo(posX, RULER_SIZE);
+      ctx.moveTo(posX, canvas.height - RULER_SIZE); ctx.lineTo(posX, canvas.height - RULER_SIZE + 4);
+      ctx.stroke();
+    } else if (x % 5 === 0) {
+      ctx.beginPath();
+      ctx.moveTo(posX, RULER_SIZE - 2); ctx.lineTo(posX, RULER_SIZE);
+      ctx.moveTo(posX, canvas.height - RULER_SIZE); ctx.lineTo(posX, canvas.height - RULER_SIZE + 2);
+      ctx.stroke();
+    }
+  }
+
+  // RIGHELLI VERTICALI (Sinistra & Destra)
+  // Saltiamo y == 0 e y == gridHeight per non stampare valori negli angoli
+  for (let y = 1; y < gridHeight; y++) {
+    const posY = RULER_SIZE + (y * cellSize);
+    if (y % 10 === 0) {
+      // Testo sinistra e destra
+      ctx.fillText(y.toString(), RULER_SIZE / 2, posY);
+      ctx.fillText(y.toString(), canvas.width - (RULER_SIZE / 2), posY);
+      
+      // Tacche
+      ctx.beginPath();
+      ctx.moveTo(RULER_SIZE - 4, posY); ctx.lineTo(RULER_SIZE, posY);
+      ctx.moveTo(canvas.width - RULER_SIZE, posY); ctx.lineTo(canvas.width - RULER_SIZE + 4, posY);
+      ctx.stroke();
+    } else if (y % 5 === 0) {
+      ctx.beginPath();
+      ctx.moveTo(RULER_SIZE - 2, posY); ctx.lineTo(RULER_SIZE, posY);
+      ctx.moveTo(canvas.width - RULER_SIZE, posY); ctx.lineTo(canvas.width - RULER_SIZE + 2, posY);
+      ctx.stroke();
+    }
+  }
+
+  // 5. Copertura neutrale dei 4 Angoli (Senza label)
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillRect(0, 0, RULER_SIZE, RULER_SIZE); // Top-Left
+  ctx.fillRect(canvas.width - RULER_SIZE, 0, RULER_SIZE, RULER_SIZE); // Top-Right
+  ctx.fillRect(0, canvas.height - RULER_SIZE, RULER_SIZE, RULER_SIZE); // Bottom-Left
+  ctx.fillRect(canvas.width - RULER_SIZE, canvas.height - RULER_SIZE, RULER_SIZE, RULER_SIZE); // Bottom-Right
+
+  ctx.strokeStyle = '#94a3b8';
+  ctx.strokeRect(0, 0, RULER_SIZE, RULER_SIZE);
+  ctx.strokeRect(canvas.width - RULER_SIZE, 0, RULER_SIZE, RULER_SIZE);
+  ctx.strokeRect(0, canvas.height - RULER_SIZE, RULER_SIZE, RULER_SIZE);
+  ctx.strokeRect(canvas.width - RULER_SIZE, canvas.height - RULER_SIZE, RULER_SIZE, RULER_SIZE);
 }
 
 function changeZoom(delta) {
@@ -413,8 +495,13 @@ document.getElementById('schemaNameInput').addEventListener('change', (e) => {
 
 canvas.addEventListener('click', (e) => {
   const rect = canvas.getBoundingClientRect();
-  const x = Math.floor((e.clientX - rect.left) / (cellSize * currentZoom));
-  const y = Math.floor((e.clientY - rect.top) / (cellSize * currentZoom));
+  const clickX = e.clientX - rect.left;
+  const clickY = e.clientY - rect.top;
+
+  // Sottraiamo il margine del righello scalato con lo zoom
+  const x = Math.floor((clickX - (RULER_SIZE * currentZoom)) / (cellSize * currentZoom));
+  const y = Math.floor((clickY - (RULER_SIZE * currentZoom)) / (cellSize * currentZoom));
+
   if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight) {
     gridData[`${x},${y}`] = selectedColor;
     drawGrid();
@@ -437,8 +524,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (restoreFromLocalStorage()) {
     const bgSwatch = document.getElementById('backgroundSwatch');
     if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
-    canvas.width = gridWidth * cellSize;
-    canvas.height = gridHeight * cellSize;
+    canvas.width = (gridWidth * cellSize) + (RULER_SIZE * 2);
+    canvas.height = (gridHeight * cellSize) + (RULER_SIZE * 2);
     drawGrid();
     resetZoomFit();
   } else {
