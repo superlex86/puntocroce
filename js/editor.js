@@ -8,7 +8,7 @@ let renderStyle = 'square';
 let gridData = {};
 
 const AUTOSAVE_KEY = 'punto_croce_autosave';
-const PROJECT_NAME = 'Schema Punto Croce';
+const PROJECT_NAME = 'Schema';
 const DEFAULT_SCHEMA_PREFIX = `${PROJECT_NAME} `;
 let schemaName = `${DEFAULT_SCHEMA_PREFIX}1`;
 let schemaNameWasRenamed = false;
@@ -49,7 +49,7 @@ function markAutosaveAsExported() {
 
 function getNextSchemaName() {
   if (schemaNameWasRenamed) return `${DEFAULT_SCHEMA_PREFIX}1`;
-  const match = schemaName.match(/^Schema Punto Croce (\d+)$/);
+  const match = schemaName.match(/^Schema (\d+)$/);
   const nextNumber = match ? Number(match[1]) + 1 : 1;
   return `${DEFAULT_SCHEMA_PREFIX}${nextNumber}`;
 }

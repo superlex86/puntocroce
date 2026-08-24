@@ -146,7 +146,7 @@ function importProjectFromLocal(event) {
         gridData = data;
         if (typeof projectData.title === 'string' && projectData.title.trim()) {
           schemaName = projectData.title.trim();
-          schemaNameWasRenamed = !/^Schema Punto Croce \d+$/.test(schemaName);
+          schemaNameWasRenamed = !/^Schema \d+$/.test(schemaName);
         }
 
         const inputW = document.getElementById('gridWidthInput');

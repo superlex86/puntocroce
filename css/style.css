@@ -35,14 +35,13 @@ body {
   font-size: 1rem;
   color: #333;
   font-weight: 700;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex-shrink: 1;
+  flex-shrink: 0;
 }
 
 .schema-name-form {
-  flex: 0 1 240px;
+  flex: 0 1 180px;
   min-width: 120px;
 }
 
@@ -186,7 +185,7 @@ label {
 }
 
 button.action-btn { 
-  padding: 8px 12px; 
+  padding: 8px 8px; 
   border: none; 
   border-radius: 6px; 
   background: #2563eb; 
@@ -202,6 +201,8 @@ button.action-btn.secondary { background: #6b7280; }
 button.action-btn.secondary:hover { background: #565e68; }
 button.action-btn.gdrive { background: #0f9d58; }
 button.action-btn.gdrive:hover { background: #0d8047; }
+button.action-btn.new { background: #0f9d58; }
+button.action-btn.new:hover { background: #0d8047; }
 button.action-btn.danger { background: #ef4444; }
 button.action-btn.danger:hover { background: #dc2626; }
 

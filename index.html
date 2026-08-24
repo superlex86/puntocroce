@@ -9,10 +9,11 @@
 <body>
 
   <header id="mainHeader">
-    <h1 class="app-title">🪡 Punto Croce Web</h1>
-    <button id="toggleSidebarBtn" aria-label="Apri o chiudi gli strumenti">☰ Strumenti</button>
+    <h1 class="app-title">🪡</h1>
+    <button id="toggleSidebarBtn" aria-label="Apri o chiudi gli strumenti">☰</button>
+    <button class="action-btn new" onclick="createNewSchema()">Nuovo</button>
     <form id="schemaNameForm" class="schema-name-form">
-      <input id="schemaNameInput" class="schema-name-input" type="text" maxlength="100" value="Schema Punto Croce 1" aria-label="Nome dello schema">
+      <input id="schemaNameInput" class="schema-name-input" type="text" maxlength="100" value="Schema 1" aria-label="Nome dello schema">
     </form>
     <div id="projectStatus" class="project-status" role="status" aria-live="polite">Nessun autosave locale</div>
   </header>
@@ -88,8 +89,6 @@
     </div>
 
     <div class="section">
-      <label>Importa / Esporta</label>
-      <button class="action-btn secondary" onclick="createNewSchema()">Nuovo</button>
       <button class="action-btn" onclick="exportPNG()">Esporta Immagine (PNG)</button>
       <button class="action-btn" onclick="exportPDF()">Esporta PDF</button>
       <button class="action-btn secondary" onclick="exportProjectToLocal()">Scarica Schema (.json)</button>
