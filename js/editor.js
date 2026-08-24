@@ -8,7 +8,107 @@ let renderStyle = 'square';
 let gridData = {};
 
 const AUTOSAVE_KEY = 'punto_croce_autosave';
+const PROJECT_NAME = 'Schema Punto Croce';
+const DEFAULT_SCHEMA_PREFIX = `${PROJECT_NAME} `;
+let schemaName = `${DEFAULT_SCHEMA_PREFIX}1`;
+let schemaNameWasRenamed = false;
 let isDirty = false;
+
+function updateProjectStatus(status) {
+  const statusElement = document.getElementById('projectStatus');
+  if (statusElement) statusElement.textContent = status;
+}
+
+function getSafeFileName(extension) {
+  const safeName = schemaName.trim()
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, '')
+    .replace(/[. ]+$/, '')
+    .trim() || `${DEFAULT_SCHEMA_PREFIX}1`;
+  return `${safeName}.${extension}`;
+}
+
+function updateSchemaName(value) {
+  const nextName = value.trim() || `${DEFAULT_SCHEMA_PREFIX}1`;
+  schemaNameWasRenamed = nextName !== schemaName;
+  schemaName = nextName;
+  autoSaveToLocalStorage();
+  updateProjectStatus('Nome modificato - autosalvataggio locale aggiornato');
+}
+
+function markAutosaveAsExported() {
+  try {
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    if (!saved) return;
+    const state = JSON.parse(saved);
+    state.hasUnexportedChanges = false;
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('Errore nell\'aggiornamento dello stato di esportazione', e);
+  }
+}
+
+function getNextSchemaName() {
+  if (schemaNameWasRenamed) return `${DEFAULT_SCHEMA_PREFIX}1`;
+  const match = schemaName.match(/^Schema Punto Croce (\d+)$/);
+  const nextNumber = match ? Number(match[1]) + 1 : 1;
+  return `${DEFAULT_SCHEMA_PREFIX}${nextNumber}`;
+}
+
+function createNewSchema() {
+  if (isDirty) {
+    const warningText = document.getElementById('newSchemaWarningText');
+    if (warningText) warningText.textContent = `${schemaName} contiene modifiche non ancora esportate in un file JSON.`;
+    const modal = document.getElementById('newSchemaModal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
+  proceedWithNewSchema();
+}
+
+function closeNewSchemaModal() {
+  const modal = document.getElementById('newSchemaModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function exportBeforeNewSchema() {
+  closeNewSchemaModal();
+  const exported = await exportProjectToLocal();
+  if (exported) proceedWithNewSchema();
+}
+
+function proceedWithNewSchema() {
+  closeNewSchemaModal();
+  gridWidth = 50;
+  gridHeight = 50;
+  cellSize = 15;
+  canvasBackgroundColor = '#FFFFFF';
+  renderStyle = 'square';
+  gridData = {};
+  schemaName = getNextSchemaName();
+  schemaNameWasRenamed = false;
+  isDirty = false;
+
+  const inputW = document.getElementById('gridWidthInput');
+  const inputH = document.getElementById('gridHeightInput');
+  const schemaNameInput = document.getElementById('schemaNameInput');
+  const bgSelect = document.getElementById('backgroundColorSelect');
+  const styleSelect = document.getElementById('renderStyleSelect');
+  if (inputW) inputW.value = gridWidth;
+  if (inputH) inputH.value = gridHeight;
+  if (schemaNameInput) schemaNameInput.value = schemaName;
+  if (bgSelect) bgSelect.value = canvasBackgroundColor;
+  if (styleSelect) styleSelect.value = renderStyle;
+  const bgSwatch = document.getElementById('backgroundSwatch');
+  if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
+
+  try {
+    localStorage.removeItem(AUTOSAVE_KEY);
+  } catch (e) {
+    console.error('Errore nella rimozione del salvataggio automatico', e);
+  }
+  initCanvas();
+  updateProjectStatus('Nuovo schema - nessun autosalvataggio locale');
+}
 
 // Funzione helper per convertire HEX a RGB
 function hexToRgb(hex) {
@@ -62,6 +162,9 @@ function autoSaveToLocalStorage() {
     gridWidth: gridWidth,
     gridHeight: gridHeight,
     cellSize: cellSize,
+    schemaName: schemaName,
+    schemaNameWasRenamed: schemaNameWasRenamed,
+    hasUnexportedChanges: true,
     canvasBackgroundColor: canvasBackgroundColor,
     renderStyle: renderStyle,
     gridData: gridData,
@@ -71,8 +174,10 @@ function autoSaveToLocalStorage() {
 
   try {
     localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+    updateProjectStatus('Autosalvataggio locale aggiornato - scarica lo schema per conservarlo sul dispositivo');
   } catch (e) {
     console.error('Errore nel salvataggio automatico locale', e);
+    updateProjectStatus('Autosalvataggio locale non disponibile');
   }
 }
 
@@ -82,10 +187,14 @@ function restoreFromLocalStorage() {
     saved = localStorage.getItem(AUTOSAVE_KEY);
   } catch (e) {
     console.error('Errore nella lettura del salvataggio automatico', e);
+    updateProjectStatus('Autosalvataggio locale non disponibile');
     return false;
   }
 
-  if (!saved) return false;
+  if (!saved) {
+    updateProjectStatus('Nessun autosalvataggio locale');
+    return false;
+  }
 
   try {
     const state = JSON.parse(saved);
@@ -97,11 +206,17 @@ function restoreFromLocalStorage() {
       typeof state.gridData === 'object' &&
       !Array.isArray(state.gridData);
 
-    if (!validDimensions || !validGridData) return false;
+    if (!validDimensions || !validGridData) {
+      updateProjectStatus('Autosalvataggio locale non valido');
+      return false;
+    }
 
     gridWidth = state.gridWidth;
     gridHeight = state.gridHeight;
     gridData = state.gridData;
+    if (typeof state.schemaName === 'string' && state.schemaName.trim()) schemaName = state.schemaName.trim();
+    schemaNameWasRenamed = state.schemaNameWasRenamed === true;
+    isDirty = state.hasUnexportedChanges !== false;
     if (Number.isFinite(state.cellSize) && state.cellSize > 0) cellSize = state.cellSize;
     if (state.canvasBackgroundColor) canvasBackgroundColor = state.canvasBackgroundColor;
     if (state.renderStyle) renderStyle = state.renderStyle;
@@ -117,9 +232,14 @@ function restoreFromLocalStorage() {
     const styleSelect = document.getElementById('renderStyleSelect');
     if (styleSelect) styleSelect.value = renderStyle;
 
+    const schemaNameInput = document.getElementById('schemaNameInput');
+    if (schemaNameInput) schemaNameInput.value = schemaName;
+
+    updateProjectStatus('Autosalvataggio locale ripristinato - verifica o scarica lo schema');
     return true;
   } catch (e) {
     console.error('Errore nel caricamento del salvataggio automatico', e);
+    updateProjectStatus('Autosalvataggio locale non valido');
   }
   return false;
 }
@@ -270,6 +390,7 @@ function clearGrid() {
     localStorage.removeItem(AUTOSAVE_KEY);
     isDirty = false;
     drawGrid();
+    updateProjectStatus('Griglia vuota - nessun autosalvataggio locale');
   }
 }
 
@@ -279,6 +400,15 @@ document.getElementById('toggleSidebarBtn').addEventListener('click', () => {
 
 document.getElementById('closeSidebarBtn').addEventListener('click', () => {
   sidebar.classList.remove('open');
+});
+
+document.getElementById('schemaNameForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  updateSchemaName(document.getElementById('schemaNameInput').value);
+});
+
+document.getElementById('schemaNameInput').addEventListener('change', (e) => {
+  updateSchemaName(e.target.value);
 });
 
 canvas.addEventListener('click', (e) => {
@@ -316,6 +446,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const bgSwatch = document.getElementById('backgroundSwatch');
     if (bgSwatch) bgSwatch.style.backgroundColor = canvasBackgroundColor;
     initCanvas();
+    updateProjectStatus('Nessun autosalvataggio locale');
   }
 });
 

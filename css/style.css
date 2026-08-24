@@ -35,8 +35,49 @@ body {
   font-size: 1rem;
   color: #333;
   font-weight: 700;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
+.schema-name-form {
+  flex: 0 1 240px;
+  min-width: 120px;
+}
+
+.schema-name-input {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #333;
+  font: inherit;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 700px) {
+  #mainHeader {
+    gap: 6px;
+    padding: 0 8px;
+  }
+
+  .schema-name-form {
+    flex: 1 1 120px;
+    min-width: 80px;
+  }
+
+  .project-status {
+    max-width: 28vw;
+  }
+}
+
+.project-status {
+  max-width: 34vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #666;
+  font-size: 0.75rem;
 }
 
 #toggleSidebarBtn {

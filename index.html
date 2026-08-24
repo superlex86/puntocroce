@@ -9,9 +9,31 @@
 <body>
 
   <header id="mainHeader">
-    <button id="toggleSidebarBtn" aria-label="Toggle Sidebar">☰ Strumenti</button>
     <h1 class="app-title">🪡 Punto Croce Web</h1>
+    <button id="toggleSidebarBtn" aria-label="Apri o chiudi gli strumenti">☰ Strumenti</button>
+    <form id="schemaNameForm" class="schema-name-form">
+      <input id="schemaNameInput" class="schema-name-input" type="text" maxlength="100" value="Schema Punto Croce 1" aria-label="Nome dello schema">
+    </form>
+    <div id="projectStatus" class="project-status" role="status" aria-live="polite">Nessun autosave locale</div>
   </header>
+
+  <div id="newSchemaModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="newSchemaTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="newSchemaTitle">Modifiche non esportate</h2>
+        <button class="modal-close" onclick="closeNewSchemaModal()" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong id="newSchemaWarningText">Lo schema contiene modifiche non ancora esportate in un file JSON.</strong></p>
+        <p>Puoi esportarlo prima di iniziare un nuovo schema oppure procedere comunque.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn secondary" onclick="closeNewSchemaModal()">Annulla</button>
+        <button class="action-btn" onclick="exportBeforeNewSchema()">Esporta</button>
+        <button class="action-btn danger" onclick="proceedWithNewSchema()">Procedi comunque</button>
+      </div>
+    </div>
+  </div>
 
   <aside id="sidebar">
     <div class="sidebar-header">
@@ -67,12 +89,13 @@
 
     <div class="section">
       <label>Importa / Esporta</label>
+      <button class="action-btn secondary" onclick="createNewSchema()">Nuovo</button>
       <button class="action-btn" onclick="exportPNG()">Esporta Immagine (PNG)</button>
       <button class="action-btn" onclick="exportPDF()">Esporta PDF</button>
-      <button class="action-btn secondary" onclick="exportProjectToLocal()">Salva File (.cross)</button>
+      <button class="action-btn secondary" onclick="exportProjectToLocal()">Scarica Schema (.json)</button>
       <div class="file-input-wrapper">
-        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica File (.cross)</button>
-        <input type="file" id="localProjectLoader" accept=".cross,.json" onchange="importProjectFromLocal(event)" style="display: none;">
+        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica Schema (.json)</button>
+        <input type="file" id="localProjectLoader" accept=".json" onchange="importProjectFromLocal(event)" style="display: none;">
       </div>
       <button class="action-btn gdrive" onclick="saveToDrive()">☁️ Salva su Google Drive</button>
       <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>

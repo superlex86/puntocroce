@@ -29,7 +29,7 @@ function saveToDrive() {
 
 async function uploadToGoogleDrive(accessToken) {
   const projectData = {
-    title: 'Schema Punto Croce',
+    title: schemaName,
     gridWidth: gridWidth,
     gridHeight: gridHeight,
     cellSize: cellSize,
@@ -39,7 +39,7 @@ async function uploadToGoogleDrive(accessToken) {
   const file = new Blob([fileContent], { type: 'application/json' });
   
   const metadata = {
-    name: 'schema_punto_croce.cross',
+    name: getSafeFileName('json'),
     mimeType: 'application/json',
   };
 

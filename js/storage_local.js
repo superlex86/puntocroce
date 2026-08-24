@@ -18,7 +18,7 @@ function exportPNG() {
 
   // 3. Scarica l'immagine
   const link = document.createElement('a');
-  link.download = 'schema-punto-croce.png';
+  link.download = getSafeFileName('png');
   link.href = exportCanvas.toDataURL('image/png');
   document.body.appendChild(link);
   link.click();
@@ -74,13 +74,13 @@ function exportPDF() {
     pdf.addImage(imgData, 'PNG', xOffset, padding, scaledWidth, maxImgHeight);
   }
 
-  pdf.save('schema-punto-croce.pdf');
+  pdf.save(getSafeFileName('pdf'));
 }
 
 // Salva lo stato del progetto con Web Share API (mobile) o Download diretto (desktop)
 async function exportProjectToLocal() {
   const projectData = {
-    title: 'Schema Punto Croce',
+    title: schemaName,
     gridWidth: gridWidth,
     gridHeight: gridHeight,
     cellSize: cellSize,
@@ -88,23 +88,25 @@ async function exportProjectToLocal() {
   };
 
   const jsonStr = JSON.stringify(projectData, null, 2);
-  const file = new File([jsonStr], 'schema-punto-croce.json', { type: 'application/json' });
+  const file = new File([jsonStr], getSafeFileName('json'), { type: 'application/json' });
 
   // Utilizza il menu di condivisione nativo del sistema operativo se disponibile (Android / iOS)
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.share({
         files: [file],
-        title: 'Schema Punto Croce',
-        text: 'Ecco il mio schema punto croce'
+        title: schemaName,
+        text: `Ecco il mio schema punto croce: ${schemaName}`
       });
       isDirty = false;
-      return;
+      markAutosaveAsExported();
+      updateProjectStatus('Schema scaricato - autosalvataggio locale sincronizzato');
+      return true;
     } catch (err) {
       if (err.name !== 'AbortError') {
         console.error('Errore nella condivisione:', err);
       } else {
-        return; // L'utente ha annullato il menu di condivisione
+        return false;
       }
     }
   }
@@ -113,15 +115,18 @@ async function exportProjectToLocal() {
   const url = URL.createObjectURL(file);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'schema-punto-croce.json';
+  a.download = getSafeFileName('json');
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   isDirty = false;
+  markAutosaveAsExported();
+  updateProjectStatus('Schema scaricato - autosalvataggio locale sincronizzato');
+  return true;
 }
 
-// Carica un file .cross o .json salvato
+// Carica un file .json salvato
 function importProjectFromLocal(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -139,17 +144,25 @@ function importProjectFromLocal(event) {
         gridWidth = w;
         gridHeight = h;
         gridData = data;
+        if (typeof projectData.title === 'string' && projectData.title.trim()) {
+          schemaName = projectData.title.trim();
+          schemaNameWasRenamed = !/^Schema Punto Croce \d+$/.test(schemaName);
+        }
 
         const inputW = document.getElementById('gridWidthInput');
         const inputH = document.getElementById('gridHeightInput');
         if (inputW) inputW.value = gridWidth;
         if (inputH) inputH.value = gridHeight;
+        const schemaNameInput = document.getElementById('schemaNameInput');
+        if (schemaNameInput) schemaNameInput.value = schemaName;
 
         initCanvas();
         autoSaveToLocalStorage();
         isDirty = false;
+        markAutosaveAsExported();
+        updateProjectStatus('Schema caricato - autosalvataggio locale sincronizzato');
 
-        alert('Progetto caricato con successo!');
+        alert('Schema caricato con successo!');
       } else {
         alert('Formato file non valido.');
       }
