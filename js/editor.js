@@ -154,9 +154,9 @@ function drawGrid() {
   
   // Disegna i filati nello stile selezionato
   if (renderStyle === 'cross') {
-    const padding = cellSize * 0.2;
     ctx.lineWidth = Math.max(1.5, cellSize * 0.1);
-    ctx.lineCap = 'round';
+    const padding = Math.max(1, ctx.lineWidth * 0.5);
+    ctx.lineCap = 'butt';
 
     for (let key in gridData) {
       const [x, y] = key.split(',').map(Number);
