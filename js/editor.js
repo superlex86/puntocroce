@@ -67,36 +67,57 @@ function autoSaveToLocalStorage() {
     gridData: gridData,
     updatedAt: new Date().toISOString()
   };
-  localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
   isDirty = true;
+
+  try {
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error('Errore nel salvataggio automatico locale', e);
+  }
 }
 
 function restoreFromLocalStorage() {
-  const saved = localStorage.getItem(AUTOSAVE_KEY);
+  let saved;
+  try {
+    saved = localStorage.getItem(AUTOSAVE_KEY);
+  } catch (e) {
+    console.error('Errore nella lettura del salvataggio automatico', e);
+    return false;
+  }
+
   if (!saved) return false;
 
   try {
     const state = JSON.parse(saved);
-    if (state.gridWidth && state.gridHeight && state.gridData) {
-      gridWidth = state.gridWidth;
-      gridHeight = state.gridHeight;
-      gridData = state.gridData;
-      if (state.canvasBackgroundColor) canvasBackgroundColor = state.canvasBackgroundColor;
-      if (state.renderStyle) renderStyle = state.renderStyle;
+    const validDimensions = Number.isInteger(state.gridWidth) &&
+      Number.isInteger(state.gridHeight) &&
+      state.gridWidth >= 10 && state.gridWidth <= 200 &&
+      state.gridHeight >= 10 && state.gridHeight <= 200;
+    const validGridData = state.gridData &&
+      typeof state.gridData === 'object' &&
+      !Array.isArray(state.gridData);
 
-      const inputW = document.getElementById('gridWidthInput');
-      const inputH = document.getElementById('gridHeightInput');
-      if (inputW) inputW.value = gridWidth;
-      if (inputH) inputH.value = gridHeight;
+    if (!validDimensions || !validGridData) return false;
 
-      const bgSelect = document.getElementById('backgroundColorSelect');
-      if (bgSelect) bgSelect.value = canvasBackgroundColor;
+    gridWidth = state.gridWidth;
+    gridHeight = state.gridHeight;
+    gridData = state.gridData;
+    if (Number.isFinite(state.cellSize) && state.cellSize > 0) cellSize = state.cellSize;
+    if (state.canvasBackgroundColor) canvasBackgroundColor = state.canvasBackgroundColor;
+    if (state.renderStyle) renderStyle = state.renderStyle;
 
-      const styleSelect = document.getElementById('renderStyleSelect');
-      if (styleSelect) styleSelect.value = renderStyle;
+    const inputW = document.getElementById('gridWidthInput');
+    const inputH = document.getElementById('gridHeightInput');
+    if (inputW) inputW.value = gridWidth;
+    if (inputH) inputH.value = gridHeight;
 
-      return true;
-    }
+    const bgSelect = document.getElementById('backgroundColorSelect');
+    if (bgSelect) bgSelect.value = canvasBackgroundColor;
+
+    const styleSelect = document.getElementById('renderStyleSelect');
+    if (styleSelect) styleSelect.value = renderStyle;
+
+    return true;
   } catch (e) {
     console.error('Errore nel caricamento del salvataggio automatico', e);
   }
