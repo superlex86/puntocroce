@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editor Punto Croce Web</title>
+  <title>🪡 Punto Croce Web</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <header id="mainHeader">
-    <h1 class="app-title">🪡</h1>
+    <h1 class="app-title"></h1>
     <button id="toggleSidebarBtn" aria-label="Apri o chiudi gli strumenti">☰</button>
     <form id="schemaNameForm" class="schema-name-form">
       <input id="schemaNameInput" class="schema-name-input" type="text" maxlength="100" value="Schema 1" aria-label="Nome dello schema">
@@ -53,7 +53,7 @@
     </div>
 
     <div class="section">
-      <label for="backgroundColorSelect">Colore Sfondo Lavoro</label>
+      <label for="backgroundColorSelect">Colore Tela (sfondo)</label>
       <div class="color-select-wrapper">
         <span id="backgroundSwatch" class="swatch-preview"></span>
         <select id="backgroundColorSelect" class="dmc-dropdown" onchange="onCanvasBackgroundChange(this.value)">
@@ -66,7 +66,7 @@
     </div>
 
     <div class="section">
-      <label for="renderStyleSelect">Stile Visualizzazione</label>
+      <label for="renderStyleSelect">Stile Visualizzazione Punti</label>
       <select id="renderStyleSelect" class="dmc-dropdown" onchange="onRenderStyleChange(this.value)">
         <option value="square">■ Quadratini pieni</option>
         <option value="cross">✕ Croci colorate</option>
@@ -81,12 +81,12 @@
       </div>
     </div>    
     
-    <div class="section">
-      <button class="action-btn new" onclick="createNewSchema()">Nuovo Schema</button>
-      <button class="action-btn danger" onclick="clearGrid()">Svuota Griglia</button>
-      <button class="action-btn secondary" onclick="exportProjectToLocal()">Scarica Schema su File</button>
+    <div class="section"><label>Azioni</label>
+      <button class="action-btn new" onclick="createNewSchema()">📄 Nuovo Schema</button>
+      <button class="action-btn danger" onclick="clearGrid()">🧹 Svuota Schema</button>
+      <button class="action-btn secondary" onclick="exportProjectToLocal()">💾 Scarica Schema su File</button>
       <div class="file-input-wrapper">
-        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">Carica Schema da File</button>
+        <button class="action-btn secondary" style="width: 100%;" onclick="document.getElementById('localProjectLoader').click()">📂 Carica Schema da File</button>
         <input type="file" id="localProjectLoader" accept=".json" onchange="importProjectFromLocal(event)" style="display: none;">
       </div>
     </div>
@@ -95,8 +95,8 @@
       <label>Importa / Esporta</label>
       <button class="action-btn" onclick="openImageConverterModal()">📷 Converti Foto in Schema...</button>
       <input type="file" id="imageLoader" accept="image/*" style="display: none;">
-      <button class="action-btn" onclick="exportPNG()">Esporta Schema come immagine</button>
-      <button class="action-btn" onclick="exportPDF()">Esporta Schema come PDF</button>
+      <button class="action-btn" onclick="exportPNG()">🖼️ Esporta Schema come immagine</button>
+      <button class="action-btn" onclick="exportPDF()">📄 Esporta Schema come PDF</button>
     </div>
   </aside>
 
@@ -140,7 +140,7 @@
   </main>
 
   <footer id="mainFooter">
-    <span class="wip-badge">🚧 Sito in costruzione</span>
+    <span class="wip-badge">🚧 App in costruzione</span>
     <span class="footer-divider">•</span>
     <p>&copy; 2026 Alessio Zanni. Tutti i diritti riservati.</p>
   </footer>
