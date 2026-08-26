@@ -423,3 +423,13 @@ canvas {
   gap: 12px;
   justify-content: flex-end;
 }
+
+/* Limita l'allargamento del titolo/form e permette lo scorrimento del testo a capo nello status */
+#projectStatus, 
+.project-status {
+  white-space: normal;       /* Permette al testo interno di andare a capo */
+  word-break: break-word;    /* Rompe le parole troppo lunghe se necessario */
+  text-align: left;         /* Mantiene l'allineamento del testo a destra */
+  max-width: 200px;          /* Limita la larghezza massima dell'elemento per non schiacciare il form */
+  flex-shrink: 1;            /* Permette all'elemento di restringersi se lo schermo è piccolo */
+}
