@@ -554,3 +554,24 @@ function proceedWithImageConversion() {
   const fileInput = document.getElementById('imageLoader');
   if (fileInput) fileInput.click();
 }
+
+// Funzioni per la Modal di Aiuto / Help
+function openHelpModal() {
+  const modal = document.getElementById('helpModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeHelpModal() {
+  const modal = document.getElementById('helpModal');
+  if (modal) modal.style.display = 'none';
+}
+
+// Controllo prima visita all'avvio dell'applicazione
+document.addEventListener('DOMContentLoaded', () => {
+  const hasSeenHelp = localStorage.getItem('hasSeenHelp');
+  
+  if (!hasSeenHelp) {
+    openHelpModal();
+    localStorage.setItem('hasSeenHelp', 'true');
+  }
+});

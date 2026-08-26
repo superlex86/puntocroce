@@ -98,6 +98,10 @@
       <button class="action-btn" onclick="exportPNG()">🖼️ Esporta Schema come immagine</button>
       <button class="action-btn" onclick="exportPDF()">📄 Esporta Schema come PDF</button>
     </div>
+    
+    <div class="section">
+      <button class="action-btn secondary" style="margin-top: 6px;" onclick="openHelpModal()">❓ Guida</button>
+    </div>
   </aside>
 
   <!-- Modal Informativa per Conversione Foto -->
@@ -151,5 +155,56 @@
   <script src="js/image_converter.js"></script>
   <script src="js/storage_local.js"></script>
   <script src="js/storage_gdrive.js"></script>
+
+  <!-- Modal Manuale di Aiuto -->
+  <div id="helpModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-content" style="max-width: 650px;">
+      <div class="modal-header">
+        <h2 id="helpTitle">❓ Guida all'uso - Punto Croce Web</h2>
+        <button class="modal-close" onclick="closeHelpModal()" aria-label="Chiudi">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Benvenuto in <strong>Punto Croce Web</strong>! Questa applicazione ti permette di creare, modificare e convertire immagini in schemi pronti per il ricamo.</p>
+        
+        <hr style="margin: 12px 0; border: 0; border-top: 1px solid #e0e0e0;">
+
+        <p><strong>📌 Barra Superiore (Header)</strong></p>
+        <ul>
+          <li><strong>Pulsante Strumenti (☰):</strong> Apre o chiude il pannello laterale contenente le impostazioni, la tavolozza e le opzioni di salvataggio.</li>
+          <li><strong>Nome dello Schema:</strong> Campo di testo modificabile. Puoi cliccare per rinominare il progetto in qualsiasi momento (es. "Rosa Rossa"). Il nuovo nome verrà usato per i file scaricati (.json, .png, .pdf).</li>
+          <li><strong>Stato del Progetto:</strong> Mostra in tempo reale lo stato del lavoro (es. <em>Autosalvataggio pagina aggiornato</em> o avvisi relativi all'esportazione).</li>
+        </ul>
+
+        <p><strong>🛠️ Pannello Strumenti</strong></p>
+        <ul>
+          <li><strong>Dimensione Griglia:</strong> Imposta larghezza e altezza in punti (fino a un massimo di 10.000 punti totali) e clicca <em>Applica</em>.</li>
+          <li><strong>Colore Tela:</strong> Scegli il colore di sfondo della tela (Bianco, Giallo Chiaro, Grigio o Nero).</li>
+          <li><strong>Stile Visualizzazione Punti:</strong> Alterna la resa visiva tra <em>Quadratini pieni</em> e <em>Croci colorate</em>.</li>
+          <li><strong>Seleziona Filato DMC:</strong> Scegli il colore attivo tra le 29 tonalità DMC disponibili.</li>
+        </ul>
+
+        <p><strong>🎨 Area di Lavoro & Disegno</strong></p>
+        <ul>
+          <li><strong>Disegnare:</strong> Clicca o tocca una cella della griglia per applicare il colore selezionato.</li>
+          <li><strong>Righelli:</strong> Posizionati sui 4 bordi dell'area di lavoro per contare facilmente le celle (con indicatori ogni 5 e 10 punti).</li>
+          <li><strong>Zoom & Vista:</strong> Usa i pulsanti <code>+</code> e <code>-</code> per ingrandire/rimpicciolire, oppure il tasto centrale <code>⌕</code> per adattare automaticamente lo schema allo schermo.</li>
+        </ul>
+
+        <p><strong>📂 Salvataggio ed Esportazione</strong></p>
+        <ul>
+          <li><strong>Autosalvataggio:</strong> Le modifiche vengono salvate continuamente nel browser per evitare perdite accidentali di dati.</li>
+          <li><strong>Scarica / Carica (.json):</strong> Salva o riapri il file di progetto per continuare il lavoro su qualsiasi dispositivo.</li>
+          <li><strong>Esporta PNG & PDF:</strong> Scarica l'immagine (.png) o genera un documento stampabile A4 (.pdf) completo di schema e legenda dei colori DMC con il conteggio dei punti totali.</li>
+          <li><strong>Converti Foto:</strong> Carica un'immagine dal dispositivo per trasformarla in uno schema punto croce.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="action-btn" onclick="closeHelpModal()">Ho capito</button>
+      </div>
+    </div>
+  </div>
+
+
+
 </body>
 </html>
