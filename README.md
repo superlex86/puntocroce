@@ -1,34 +1,43 @@
 # 🪡 Punto Croce Web
 
-Un'applicazione web leggera, moderna e totalmente client-side per creare, modificare e convertire immagini in schemi per punto croce con tavolozza colori DMC. 
+Un'applicazione web leggera, moderna e totalmente client-side per creare, modificare e convertire immagini in schemi per punto croce con tavolozza colori DMC.
 
-Il progetto è ottimizzato per essere ospitato gratuitamente su **GitHub Pages**.
-
----
+Il progetto è ottimizzato per essere ospitato gratuitamente su **GitHub Pages**. Nel nostro caso è possibile trovarlo su:
+[https://superlex86.github.io/puntocroce/](https://superlex86.github.io/puntocroce/)
 
 ## 🚀 Caratteristiche
 
-* **Editor Griglia Grafico**: Disegna schemi su Canvas con griglia guidata (evidenziazione ogni 10 punti).
-* **Tavolozza Filati DMC**: Selezione colori reali DMC con identificativi, codici esadecimali e simboli per lo schema.
-* **Convertitore Foto-Schema**: Carica un'immagine e convertila automaticamente in uno schema punto croce mappato sui colori DMC più vicini.
-* **Salvataggio & Import Locale**: Esporta e importa i tuoi schemi in formato aperto `.cross` (JSON) o esportali come immagini `.png`.
-* **Integrazione Google Drive**: Salva i tuoi schemi direttamente sul tuo cloud tramite Google Drive API v3.
-* **100% Client-Side**: Nessun server PHP o database richiesto. Funziona direttamente nel browser.
+* **Editor Griglia Grafico con Righelli**:
+  * Disegno su Canvas con griglia guidata ed evidenziazione visiva ogni 10 punti.
+  * Righelli graduati su tutti e 4 i lati dell'area di lavoro per un conteggio rapido dei punti.
+  * Controlli di zoom integrati (`+`, `-`, reset/fit automatico allo schermo).
+  * Gestione personalizzata delle dimensioni della griglia (fino a 10.000 punti totali).
+* **Modalità di Visualizzazione Punti**:
+  * **Quadratini pieni**: Anteprima a blocchi di colore pulita e uniforme.
+  * **Croci colorate**: Visualizzazione realistica a crocette (spessore di linea a 3px e tratti arrotondati).
+* **Personalizzazione Tela di Sfondo**: Possibilità di impostare il colore della tela (Bianco, Giallo Chiaro, Grigio, Nero).
+* **Tavolozza Filati DMC**: Selezione di colori reali DMC (29 tonalità) con codici identificativi, denominazione e anteprima (swatch).
+* **Convertitore Foto-Schema**: Carica un'immagine (posterizzazione automatica sul colore DMC più vicino) e convertila direttamente in uno schema sulla griglia.
+* **Autosalvataggio & Gestione Stato**:
+  * Autosalvataggio automatico dello stato di lavoro nel `localStorage` del browser.
+  * Gestione dei cambi nome dello schema e rilevamento delle modifiche non ancora esportate.
+  * Avviso di conferma in caso di creazione di un nuovo schema o chiusura pagina con modifiche non salvate.
+* **Importazione ed Esportazione Avanzata**:
+  * **Formato `.json`**: Salvataggio e caricamento nativo dello schema (con supporto alla Web Share API su dispositivi mobile iOS/Android).
+  * **Immagine `.png`**: Esportazione dell'anteprima grafica ad alta fedeltà.
+  * **Documento `.pdf`**: Generazione di un documento A4 professionale contenente l'immagine dello schema in alta risoluzione e una legenda compattata a 2 colonne dei filati DMC usati (con codici, nomi e conteggio punti totali).
+* **100% Client-Side**: Nessun server backend o database richiesto. Funziona interamente nel browser.
 
----
-
-## 🛠️ Struttura del Progetto
+## 📁 Struttura del Progetto
 
 ```text
-.
-├── index.html            # Interfaccia utente principale
-├── css/
-│   └── style.css         # Stili UI, layout e finestre modali
-└── js/
-    ├── editor.js         # Logica della griglia Canvas e disegno
-    ├── image_converter.js # Conversione da foto a schema DMC
-    ├── storage_local.js  # Import/Export file .cross e PNG
-    └── storage_gdrive.js # Integrazione API Google Drive
+index.html            # Interfaccia utente principale e finestre modali
+css/
+  style.css           # Stili UI, layout responsive, righelli e modali
+js/
+  editor.js           # Gestione Canvas, righelli, zoom, stili di resa e autosave
+  image_converter.js  # Algoritmo di conversione da immagine a schema DMC
+  storage_local.js    # Import/Export file .json, esportazione PNG e PDF con legenda
 ```
 
 ---
@@ -45,21 +54,6 @@ Il progetto è ottimizzato per essere ospitato gratuitamente su **GitHub Pages**
 
 Il sito sarà raggiungibile in un paio di minuti all'indirizzo:  
 `https://tuo-username.github.io/nome-repository/`
-
-Nel nostro caso:
-[https://superlex86.github.io/puntocroce/](https://superlex86.github.io/puntocroce/)
-
----
-
-## ⚙️ Configurazione Google Drive (Opzionale)
-
-Se desideri abilitare il pulsante "Salva su Google Drive":
-
-1. Vai su [Google Cloud Console](https://console.cloud.google.com/).
-2. Crea un nuovo progetto e abilita le **Google Drive API**.
-3. Configura la schermata consenso OAuth e crea un **ID Client OAuth 2.0** per applicazioni web.
-4. Aggiungi l'URL del tuo sito GitHub Pages (`https://tuo-username.github.io`) nelle **Origini JavaScript autorizzate**.
-5. Apri il file `js/storage_gdrive.js` e sostituisci il valore della costante `GOOGLE_CLIENT_ID` con il tuo Client ID.
 
 ---
 
