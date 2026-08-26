@@ -302,20 +302,21 @@ function drawGrid() {
 
   // 2. Disegno Crocette / Quadrati (con offset RULER_SIZE)
   if (renderStyle === 'cross') {
-    ctx.lineWidth = Math.max(1.5, cellSize * 0.1);
-    ctx.lineCap = 'butt';
-    for (let key in gridData) {
-      const [x, y] = key.split(',').map(Number);
-      const cellX = RULER_SIZE + (x * cellSize);
-      const cellY = RULER_SIZE + (y * cellSize);
-      ctx.strokeStyle = gridData[key];
-      ctx.beginPath();
-      ctx.moveTo(cellX, cellY);
-      ctx.lineTo(cellX + cellSize, cellY + cellSize);
-      ctx.moveTo(cellX + cellSize, cellY);
-      ctx.lineTo(cellX, cellY + cellSize);
-      ctx.stroke();
-    }
+  // Impostiamo lo spessore della linea a 3 pixel
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round'; // Arrotonda leggermente i tratti per un look migliore
+  for (let key in gridData) {
+    const [x, y] = key.split(',').map(Number);
+    const cellX = RULER_SIZE + (x * cellSize);
+    const cellY = RULER_SIZE + (y * cellSize);
+    ctx.strokeStyle = gridData[key];
+    ctx.beginPath();
+    ctx.moveTo(cellX, cellY);
+    ctx.lineTo(cellX + cellSize, cellY + cellSize);
+    ctx.moveTo(cellX + cellSize, cellY);
+    ctx.lineTo(cellX, cellY + cellSize);
+    ctx.stroke();
+  }
   } else {
     for (let key in gridData) {
       const [x, y] = key.split(',').map(Number);
